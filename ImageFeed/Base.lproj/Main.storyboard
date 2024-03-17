@@ -44,7 +44,7 @@
                                                     <buttonConfiguration key="configuration" style="plain" image="like_button_on"/>
                                                 </button>
                                             </subviews>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
                                                 <constraint firstItem="EUX-gv-AHe" firstAttribute="leading" secondItem="7FS-y2-A55" secondAttribute="leading" constant="8" id="2Nj-Wn-udI"/>
                                                 <constraint firstItem="7FS-y2-A55" firstAttribute="trailing" secondItem="42a-u1-uwO" secondAttribute="trailing" id="URz-71-ZI8"/>
