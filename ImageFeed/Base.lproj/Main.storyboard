@@ -58,7 +58,7 @@
                                                 <constraint firstItem="7FS-y2-A55" firstAttribute="bottom" secondItem="EUX-gv-AHe" secondAttribute="bottom" constant="8" id="wiq-p4-hIl"/>
                                             </constraints>
                                         </tableViewCellContentView>
-                                        <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <connections>
                                             <outlet property="cellImage" destination="7FS-y2-A55" id="knJ-MS-brY"/>
                                             <outlet property="dataLabel" destination="EUX-gv-AHe" id="obe-3e-JnH"/>
