@@ -15,6 +15,7 @@
 		84BD20BE2BA44C25008FEF90 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 84BD20BD2BA44C25008FEF90 /* Base */; };
 		84BD20C72BA459CD008FEF90 /* ImagesListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BD20C62BA459CD008FEF90 /* ImagesListCell.swift */; };
 		84BD20CB2BA99AC9008FEF90 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BD20CA2BA99AC9008FEF90 /* ProfileViewController.swift */; };
+		84DDA45B2BB20DB7009783EC /* SingleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DDA45A2BB20DB7009783EC /* SingleImageViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		84BD20BF2BA44C25008FEF90 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		84BD20C62BA459CD008FEF90 /* ImagesListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListCell.swift; sourceTree = "<group>"; };
 		84BD20CA2BA99AC9008FEF90 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		84DDA45A2BB20DB7009783EC /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +79,7 @@
 			children = (
 				84BD20C62BA459CD008FEF90 /* ImagesListCell.swift */,
 				84BD20B52BA44C23008FEF90 /* ImagesViewController.swift */,
+				84DDA4592BB20D66009783EC /* SingleImageView */,
 			);
 			path = ImagesList;
 			sourceTree = "<group>";
@@ -87,6 +90,14 @@
 				84BD20CA2BA99AC9008FEF90 /* ProfileViewController.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		84DDA4592BB20D66009783EC /* SingleImageView */ = {
+			isa = PBXGroup;
+			children = (
+				84DDA45A2BB20DB7009783EC /* SingleImageViewController.swift */,
+			);
+			path = SingleImageView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -164,6 +175,7 @@
 				84BD20C72BA459CD008FEF90 /* ImagesListCell.swift in Sources */,
 				84BD20CB2BA99AC9008FEF90 /* ProfileViewController.swift in Sources */,
 				84BD20B22BA44C23008FEF90 /* AppDelegate.swift in Sources */,
+				84DDA45B2BB20DB7009783EC /* SingleImageViewController.swift in Sources */,
 				84BD20B42BA44C23008FEF90 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

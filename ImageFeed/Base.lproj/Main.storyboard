@@ -69,6 +69,7 @@
                                             <outlet property="cellImage" destination="7FS-y2-A55" id="knJ-MS-brY"/>
                                             <outlet property="dataLabel" destination="EUX-gv-AHe" id="obe-3e-JnH"/>
                                             <outlet property="likeButton" destination="42a-u1-uwO" id="It3-0y-IlU"/>
+                                            <segue destination="Ca7-J1-c6T" kind="presentation" trigger="accessoryAction" id="PJY-PU-SDI"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -224,7 +225,7 @@
                                 </connections>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1eE-UQ-qkf">
-                                <rect key="frame" x="8" y="67" width="48" height="48"/>
+                                <rect key="frame" x="8" y="8" width="48" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="48" id="SDm-M2-HC3"/>
                                     <constraint firstAttribute="height" constant="48" id="kiN-ac-GiH"/>
@@ -236,7 +237,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KV4-OD-gWK">
-                                <rect key="frame" x="171.66666666666666" y="732" width="50" height="50"/>
+                                <rect key="frame" x="171.66666666666666" y="766" width="50" height="50"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="share_button"/>
                                 <connections>
