@@ -69,7 +69,7 @@
                                             <outlet property="cellImage" destination="7FS-y2-A55" id="knJ-MS-brY"/>
                                             <outlet property="dataLabel" destination="EUX-gv-AHe" id="obe-3e-JnH"/>
                                             <outlet property="likeButton" destination="42a-u1-uwO" id="It3-0y-IlU"/>
-                                            <segue destination="Ca7-J1-c6T" kind="presentation" trigger="accessoryAction" id="PJY-PU-SDI"/>
+                                            <segue destination="Ca7-J1-c6T" kind="presentation" identifier="ShowSingleImage" trigger="accessoryAction" id="xzs-dN-GSn"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
