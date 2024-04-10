@@ -4,7 +4,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
-        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -215,7 +214,7 @@
         <!--Auth View Controller-->
         <scene sceneID="IgV-aZ-mFY">
             <objects>
-                <viewController id="PJ1-gF-KtI" customClass="AuthViewController" customModule="Image_Feed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="PJ1-gF-KtI" customClass="AuthViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FMT-Dm-W5O">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -267,7 +266,7 @@
         <!--Web View View Controller-->
         <scene sceneID="BZu-jp-28m">
             <objects>
-                <viewController id="ROi-5H-TGQ" customClass="WebViewViewController" customModule="Image_Feed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="ROi-5H-TGQ" customClass="WebViewViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="v4h-Em-0L7">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -289,30 +288,32 @@
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="nav_back-button"/>
                                 <connections>
-                                    <action selector="didTapBackButton:" destination="ROi-5H-TGQ" eventType="touchUpInside" id="q4D-74-Y6o"/>
+                                    <action selector="didTapBackButton:" destination="ROi-5H-TGQ" eventType="touchUpInside" id="pE6-me-6a7"/>
                                 </connections>
                             </button>
-                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="hqx-ie-5vC">
-                                <rect key="frame" x="0.0" y="40" width="414" height="4"/>
-                                <color key="tintColor" name="YP Black"/>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Aet-bb-2bH">
+                                <rect key="frame" x="0.0" y="52" width="414" height="4"/>
                             </progressView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="eYW-8z-jgP"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="kJu-UO-kXK" firstAttribute="top" secondItem="eYW-8z-jgP" secondAttribute="top" id="4v2-gx-2MX"/>
-                            <constraint firstItem="hqx-ie-5vC" firstAttribute="trailing" secondItem="eYW-8z-jgP" secondAttribute="trailing" id="MMG-FA-iNa"/>
-                            <constraint firstItem="hqx-ie-5vC" firstAttribute="top" secondItem="eYW-8z-jgP" secondAttribute="top" constant="40" id="PY7-rh-Rgl"/>
-                            <constraint firstItem="hqx-ie-5vC" firstAttribute="leading" secondItem="eYW-8z-jgP" secondAttribute="leading" id="S6u-Lg-vBd"/>
+                            <constraint firstItem="Aet-bb-2bH" firstAttribute="leading" secondItem="eYW-8z-jgP" secondAttribute="leading" id="6ou-Iu-fu3"/>
+                            <constraint firstItem="Aet-bb-2bH" firstAttribute="trailing" secondItem="eYW-8z-jgP" secondAttribute="trailing" id="Bs8-DF-Y4i"/>
+                            <constraint firstItem="Aet-bb-2bH" firstAttribute="top" secondItem="eYW-8z-jgP" secondAttribute="top" constant="52" id="QrN-Fg-edX"/>
                             <constraint firstItem="kJu-UO-kXK" firstAttribute="leading" secondItem="eYW-8z-jgP" secondAttribute="leading" id="ZZX-ld-uvv"/>
                             <constraint firstAttribute="trailing" secondItem="A8T-MP-Bvj" secondAttribute="trailing" id="aoM-iq-ZBj"/>
                             <constraint firstItem="A8T-MP-Bvj" firstAttribute="leading" secondItem="v4h-Em-0L7" secondAttribute="leading" id="ePS-pO-wwT"/>
+                            <constraint firstAttribute="bottom" secondItem="Aet-bb-2bH" secondAttribute="bottom" constant="840" id="iAp-da-H7G"/>
                             <constraint firstAttribute="bottom" secondItem="A8T-MP-Bvj" secondAttribute="bottom" id="kQQ-vW-IeC"/>
                             <constraint firstItem="A8T-MP-Bvj" firstAttribute="top" secondItem="v4h-Em-0L7" secondAttribute="top" id="tjf-DU-14x"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="I04-Dy-Qiy"/>
                     <connections>
+                        <outlet property="progress" destination="Aet-bb-2bH" id="I1q-B1-QyN"/>
+                        <outlet property="progressView" destination="Aet-bb-2bH" id="Rwh-cj-vur"/>
                         <outlet property="webView" destination="A8T-MP-Bvj" id="jPL-Pt-hrd"/>
                     </connections>
                 </viewController>
@@ -348,9 +349,6 @@
         <image name="share_button" width="51" height="50"/>
         <image name="tab_editorial_active" width="30" height="30"/>
         <image name="tab_profile_active" width="30" height="30"/>
-        <namedColor name="YP Black">
-            <color red="0.10199999809265137" green="0.10599999874830246" blue="0.13300000131130219" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
