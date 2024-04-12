@@ -312,7 +312,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="I04-Dy-Qiy"/>
                     <connections>
-                        <outlet property="progress" destination="Aet-bb-2bH" id="I1q-B1-QyN"/>
                         <outlet property="progressView" destination="Aet-bb-2bH" id="Rwh-cj-vur"/>
                         <outlet property="webView" destination="A8T-MP-Bvj" id="jPL-Pt-hrd"/>
                     </connections>
