@@ -120,7 +120,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <segue destination="2er-wH-o7b" kind="presentation" id="ASy-8i-ssh"/>
+                        <segue destination="2er-wH-o7b" kind="presentation" identifier="ShowAuthenticationScreen" id="ASy-8i-ssh"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yUJ-ps-fgs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -333,7 +333,6 @@
                             <constraint firstItem="kJu-UO-kXK" firstAttribute="leading" secondItem="eYW-8z-jgP" secondAttribute="leading" id="ZZX-ld-uvv"/>
                             <constraint firstAttribute="trailing" secondItem="A8T-MP-Bvj" secondAttribute="trailing" id="aoM-iq-ZBj"/>
                             <constraint firstItem="A8T-MP-Bvj" firstAttribute="leading" secondItem="v4h-Em-0L7" secondAttribute="leading" id="ePS-pO-wwT"/>
-                            <constraint firstAttribute="bottom" secondItem="Aet-bb-2bH" secondAttribute="bottom" constant="840" id="iAp-da-H7G"/>
                             <constraint firstAttribute="bottom" secondItem="A8T-MP-Bvj" secondAttribute="bottom" id="kQQ-vW-IeC"/>
                             <constraint firstItem="A8T-MP-Bvj" firstAttribute="top" secondItem="v4h-Em-0L7" secondAttribute="top" id="tjf-DU-14x"/>
                         </constraints>
