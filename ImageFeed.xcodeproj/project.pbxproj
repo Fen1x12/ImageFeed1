@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8424B0162BD6B90B0096F987 /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 8424B0152BD6B90B0096F987 /* ProgressHUD */; };
+		8424B0192BD6BD550096F987 /* ProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8424B0182BD6BD550096F987 /* ProgressHUD.swift */; };
 		8427A2F42BC8A16E0010E868 /* OAuth2TokenStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8427A2F32BC8A16E0010E868 /* OAuth2TokenStorage.swift */; };
 		8427A2F72BCC01720010E868 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8427A2F62BCC01720010E868 /* SplashViewController.swift */; };
 		845169512BC4235600FBA64C /* WebViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845169502BC4235600FBA64C /* WebViewViewController.swift */; };
@@ -26,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8424B0182BD6BD550096F987 /* ProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHUD.swift; sourceTree = "<group>"; };
 		8427A2F32BC8A16E0010E868 /* OAuth2TokenStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2TokenStorage.swift; sourceTree = "<group>"; };
 		8427A2F62BCC01720010E868 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		845169502BC4235600FBA64C /* WebViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewViewController.swift; sourceTree = "<group>"; };
@@ -57,6 +59,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8424B0172BD6BD460096F987 /* ProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				8424B0182BD6BD550096F987 /* ProgressHUD.swift */,
+			);
+			path = ProgressHUD;
+			sourceTree = "<group>";
+		};
 		8427A2EC2BC808890010E868 /* OAuth */ = {
 			isa = PBXGroup;
 			children = (
@@ -103,6 +113,7 @@
 		84BD20B02BA44C23008FEF90 /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
+				8424B0172BD6BD460096F987 /* ProgressHUD */,
 				8427A2F52BCC014B0010E868 /* Splash */,
 				8427A2EC2BC808890010E868 /* OAuth */,
 				8451694F2BC4225400FBA64C /* Auth */,
@@ -224,6 +235,7 @@
 			files = (
 				8427A2F42BC8A16E0010E868 /* OAuth2TokenStorage.swift in Sources */,
 				84BD20B62BA44C23008FEF90 /* ImagesViewController.swift in Sources */,
+				8424B0192BD6BD550096F987 /* ProgressHUD.swift in Sources */,
 				84BD20C72BA459CD008FEF90 /* ImagesListCell.swift in Sources */,
 				8427A2F72BCC01720010E868 /* SplashViewController.swift in Sources */,
 				84BD20CB2BA99AC9008FEF90 /* ProfileViewController.swift in Sources */,
