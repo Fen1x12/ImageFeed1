@@ -1,92 +1,154 @@
 import UIKit
+import Kingfisher
+
 
 final class ProfileViewController: UIViewController {
     
-    private func initProfileImage (view: UIView) {
-        view.backgroundColor = UIColor(named: "YP Black")
-        let profileImage = UIImage(named: "avatar")
-        let profilePhotoView = UIImageView(image: profileImage)
-        profilePhotoView.tag = 1
-        view.addSubview(profilePhotoView)
-        
-        profilePhotoView.translatesAutoresizingMaskIntoConstraints = false
-        profilePhotoView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-        profilePhotoView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32).isActive = true
-        profilePhotoView.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        profilePhotoView.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        
-    }
-    
-    private func initLogoutButton(view: UIView) {
-        let logOutButton = UIButton.systemButton(
-            with: UIImage(systemName: "ipad.and.arrow.forward")!,
-            target: self,
-            action: #selector(Self.didTapLogoutButton)
-        )
-        
-        logOutButton.tintColor = UIColor(named: "YP Red")
-        view.addSubview(logOutButton)
-        logOutButton.translatesAutoresizingMaskIntoConstraints = false
-        logOutButton.centerYAnchor.constraint(equalTo: view.viewWithTag(1)!
-            .centerYAnchor).isActive = true
-        logOutButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24).isActive = true
-    }
-    
-    private func initLabels(view: UIView) {
-        let userName = UILabel()
-        userName.text = "Екатерина Новикова"
-        userName.textColor = UIColor(named: "YP White")
-        let boldFontSize: CGFloat = 23
-        let boldFont = UIFont.systemFont(ofSize: boldFontSize, weight: .bold)
-        userName.font = boldFont
-        view.addSubview(userName)
-        userName.translatesAutoresizingMaskIntoConstraints = false
-        userName.topAnchor.constraint(equalTo: view.viewWithTag(1)!.bottomAnchor, constant: 8).isActive = true
-        userName.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-        
-        let userNickName = UILabel()
-        userNickName.text = "@ekaterina_nov"
-        let regularFontSize: CGFloat = 13
-        userNickName.textColor = UIColor(named: "YP White")
-        let regularFont = UIFont.systemFont(ofSize: regularFontSize, weight: .regular)
-        userNickName.font = regularFont
-        view.addSubview(userNickName)
-        userNickName.translatesAutoresizingMaskIntoConstraints = false
-        userNickName.topAnchor.constraint(equalTo: userName.bottomAnchor, constant: 8).isActive = true
-        userNickName.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-        
-        let userDescription = UILabel()
-        userDescription.text = "Hello, world!"
-        userDescription.textColor = UIColor(named: "YP White")
-        userDescription.font = regularFont
-        view.addSubview(userDescription)
-        view.addSubview(userDescription)
-        userDescription.translatesAutoresizingMaskIntoConstraints = false
-        userDescription.topAnchor.constraint(equalTo: userNickName.bottomAnchor, constant: 8).isActive = true
-        userDescription.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-    }
-    
     override func viewDidLoad() {
+        
         super.viewDidLoad()
-        initProfileImage (view: view)
-        initLogoutButton(view: view)
-        initLabels(view: view)
+        
+        mainProfile()
+        
     }
     
+    private var fullNameUserLabel: UILabel?
+    private var nicknameUserLabel: UILabel?
+    private var messageTextUserLabel: UILabel?
+    private var profileImageServiceObserver: NSObjectProtocol?
+    private let profileService = ProfileService.shared
+    
+    // Жестко установим цвет StatusBar в светлый
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
+    func mainProfile() {
+        
+        self.view.backgroundColor = #colorLiteral(red: 0.1019607843, green: 0.1058823529, blue: 0.1333333333, alpha: 1)
+        
+        //MARK: - Констрейнты
+        
+        func applyConstraints() {
+            NSLayoutConstraint.activate([
+                fullNameUserLabel.leadingAnchor.constraint(equalTo: mainProfileImage.leadingAnchor),
+                fullNameUserLabel.topAnchor.constraint(equalTo: mainProfileImage.bottomAnchor, constant: 20),
+                profileExitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+                profileExitButton.centerYAnchor.constraint(equalTo: mainProfileImage.centerYAnchor),
+                nicknameUserLabel.leadingAnchor.constraint(equalTo: mainProfileImage.leadingAnchor),
+                nicknameUserLabel.topAnchor.constraint(equalTo: fullNameUserLabel.bottomAnchor, constant: 8),
+                messageTextUserLabel.leadingAnchor.constraint(equalTo: mainProfileImage.leadingAnchor),
+                messageTextUserLabel.topAnchor.constraint(equalTo: nicknameUserLabel.bottomAnchor, constant: 8),
+                mainProfileImage.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+                mainProfileImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+                mainProfileImage.widthAnchor.constraint(equalToConstant: 70),
+                mainProfileImage.heightAnchor.constraint(equalToConstant: 70)
+                
+            ])
+        }
+        
+        func addSubview() {
+            view.addSubview(fullNameUserLabel)
+            fullNameUserLabel.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(mainProfileImage)
+            mainProfileImage.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(nicknameUserLabel)
+            nicknameUserLabel.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(messageTextUserLabel)
+            messageTextUserLabel.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(profileExitButton)
+            profileExitButton.translatesAutoresizingMaskIntoConstraints = false
+            
+            applyConstraints()
+            
+        }
+        
+        //MARK: - Описание картинок в профиле
+        
+        let profileImage = UIImage(named: "PhotoUser")
+        lazy var mainProfileImage: UIImageView = {
+            let imageView = UIImageView(image: profileImage)
+            return imageView
+        }()
+        
+        //MARK: - Описание полей Label
+        
+        lazy var fullNameUserLabel: UILabel = {
+            let fullNameUserLabel = UILabel()
+            fullNameUserLabel.text = "Екатерина Новикова"
+            fullNameUserLabel.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            self.fullNameUserLabel = fullNameUserLabel
+            return fullNameUserLabel }()
+        
+        lazy var nicknameUserLabel: UILabel = {
+            let nicknameUserLabel = UILabel()
+            nicknameUserLabel.text = "@ekaterina_now"
+            nicknameUserLabel.textColor = #colorLiteral(red: 0.6823529412, green: 0.6862745098, blue: 0.7058823529, alpha: 1)
+            self.nicknameUserLabel = nicknameUserLabel
+            return nicknameUserLabel }()
+        
+        lazy var messageTextUserLabel: UILabel = {
+            let messageTextUserLabel = UILabel()
+            messageTextUserLabel.text = "Hello, world!"
+            messageTextUserLabel.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            self.messageTextUserLabel = messageTextUserLabel
+            return messageTextUserLabel }()
+        
+        //MARK: - Описание кнопки выхода из профиля
+        
+        lazy var profileExitButton: UIButton = {
+            let profileExitButton = UIButton.systemButton(
+                with: UIImage(systemName: "ipad.and.arrow.forward")!,
+                target: self,
+                action: #selector(Self.didTapButton)
+            )
+            profileExitButton.tintColor = #colorLiteral(red: 0.9607843137, green: 0.4196078431, blue: 0.4235294118, alpha: 1)
+            return profileExitButton }()
+        
+        addSubview() // Вызов констрейнтов
+        
+        
+        //MARK: - Обновляем аватарку
+        
+        func updateAvatar() {
+            guard
+                let profileImageURL = ProfileImageService.shared.avatarURL,
+                let url = URL(string: profileImageURL) else { return }
+            let processor = RoundCornerImageProcessor(cornerRadius: 35)
+            mainProfileImage.kf.indicatorType = .activity
+            mainProfileImage.kf.setImage(with: url,
+                                         placeholder: UIImage(named: "placeholder.jpeg"),
+                                         options: [.processor(processor),.cacheSerializer(FormatIndicatedCacheSerializer.png)])
+            let cache = ImageCache.default
+            cache.clearDiskCache()
+            cache.clearMemoryCache()
+            
+        }
+        
+        updateProfileDetails(profile: profileService.profile)
+        
+        func updateProfileDetails(profile: Profile?) {
+            guard let profile = profile else {return}
+            self.fullNameUserLabel?.text = profile.name
+            self.nicknameUserLabel?.text = profile.loginName
+            self.messageTextUserLabel?.text = profile.bio
+        }
+        
+        updateAvatar()
+        
+        profileImageServiceObserver = NotificationCenter.default.addObserver(
+            forName: ProfileImageService.didChangeNotification,
+            object: nil,
+            queue: .main) { [weak self] _ in
+                guard self != nil else { return }
+                updateAvatar()
+            }
+    }
+    
+    //MARK: - Описание действия кнопки выхода из профиля пользователя (пока отключено)
     
     @objc
-    private func didTapLogoutButton() {
-        for view in view.subviews {
-            if view is UILabel {
-                view.removeFromSuperview()
-            } else {
-                if let imageView = view as? UIImageView {
-                    imageView.image = UIImage(named: "ProfilePhotoPlaceholder")
-                    imageView.tintColor = UIColor(named: "YP Gray")
-                }
-            }
-        }
+    private func didTapButton() {
         
     }
 }
-
