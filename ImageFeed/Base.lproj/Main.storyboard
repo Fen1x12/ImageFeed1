@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -12,7 +13,7 @@
         <!--ImageList-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController title="ImageList" id="BYZ-38-t0r" customClass="ImagesListViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ImagesListViewController" title="ImageList" id="BYZ-38-t0r" customClass="ImagesListViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -120,12 +121,12 @@
         <!--Profile-->
         <scene sceneID="YGR-zN-kAn">
             <objects>
-                <viewController title="Profile" id="NZD-nu-Kyt" customClass="ProfileViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ProfileViewController" title="Profile" id="NZD-nu-Kyt" customClass="ProfileViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Eu7-Ld-vfJ">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <viewLayoutGuide key="safeArea" id="XBK-4v-h1U"/>
-                        <color key="backgroundColor" red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" name="YP White"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="" image="tab_profile_active" id="a2v-Sa-gtc">
                         <color key="badgeColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -209,7 +210,7 @@
         <!--Auth View Controller-->
         <scene sceneID="IgV-aZ-mFY">
             <objects>
-                <viewController id="PJ1-gF-KtI" customClass="AuthViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AuthViewController" id="PJ1-gF-KtI" customClass="AuthViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FMT-Dm-W5O">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -248,7 +249,6 @@
                             <constraint firstItem="Ekp-kS-mHa" firstAttribute="centerX" secondItem="FMT-Dm-W5O" secondAttribute="centerX" id="R9V-J7-hX7"/>
                             <constraint firstItem="Agv-s1-Wxw" firstAttribute="bottom" secondItem="Cqn-bv-JNW" secondAttribute="bottom" constant="90" id="d4n-Ji-kA8"/>
                             <constraint firstItem="Cqn-bv-JNW" firstAttribute="leading" secondItem="Agv-s1-Wxw" secondAttribute="leading" constant="16" id="fMY-ca-S6k"/>
-                            <constraint firstItem="Cqn-bv-JNW" firstAttribute="centerX" secondItem="FMT-Dm-W5O" secondAttribute="centerX" id="jOS-3n-4ag"/>
                             <constraint firstItem="Agv-s1-Wxw" firstAttribute="trailing" secondItem="Cqn-bv-JNW" secondAttribute="trailing" constant="16" id="rF7-fg-7c7"/>
                         </constraints>
                     </view>
@@ -343,6 +343,9 @@
         <image name="share_button" width="51" height="50"/>
         <image name="tab_editorial_active" width="30" height="30"/>
         <image name="tab_profile_active" width="30" height="30"/>
+        <namedColor name="YP White">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
