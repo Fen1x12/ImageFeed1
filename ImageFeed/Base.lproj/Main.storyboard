@@ -113,6 +113,10 @@
                             <color key="backgroundColor" red="0.1019607843" green="0.1058823529" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         </tabBarAppearance>
                     </tabBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="c32-Z9-FAM"/>
+                        <segue destination="NZD-nu-Kyt" kind="relationship" relationship="viewControllers" id="Mr6-cT-l29"/>
+                    </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SXo-ga-r4D" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -317,7 +321,6 @@
         <!--Navigation Controller-->
         <scene sceneID="1B8-a8-Fvu">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="hV4-hL-JGc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="2er-wH-o7b" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="6Bf-dH-cN1"/>
@@ -330,6 +333,7 @@
                         <segue destination="PJ1-gF-KtI" kind="relationship" relationship="rootViewController" id="ybL-5o-CRi"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hV4-hL-JGc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-442" y="-721"/>
         </scene>
