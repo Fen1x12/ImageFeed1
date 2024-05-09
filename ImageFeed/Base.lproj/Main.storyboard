@@ -100,10 +100,10 @@
             </objects>
             <point key="canvasLocation" x="872.51908396946567" y="-2.1126760563380285"/>
         </scene>
-        <!--Tab Bar Controller-->
+        <!--Tab Bar View Controller-->
         <scene sceneID="r8x-kw-CF1">
             <objects>
-                <tabBarController storyboardIdentifier="TabBarViewController" id="fxf-Y2-u2l" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarViewController" id="fxf-Y2-u2l" customClass="TabBarViewController" customModule="ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="qgC-mI-OHE">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -113,10 +113,6 @@
                             <color key="backgroundColor" red="0.1019607843" green="0.1058823529" blue="0.1333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         </tabBarAppearance>
                     </tabBar>
-                    <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="c32-Z9-FAM"/>
-                        <segue destination="NZD-nu-Kyt" kind="relationship" relationship="viewControllers" id="Mr6-cT-l29"/>
-                    </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SXo-ga-r4D" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
