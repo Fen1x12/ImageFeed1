@@ -142,13 +142,13 @@ extension SplashViewController: AuthViewControllerDelegate {
             guard let self = self else {
                 return
             }
-            UIBlockingProgressHUD.dismiss()
+            UIBlockingProgressHUD.dismiss() // скрыть индикатор загрузки
             switch result {
             case .success(let profile):
                 self.profileImageService.fetchProfileImageURL(username: profile.username) { _ in }
                 self.switchToTabBarController()
             case .failure(let errorFetchProfile):
-                UIBlockingProgressHUD.dismiss() 
+                UIBlockingProgressHUD.dismiss() // скрыть индикатор загрузки
                 self.showAlertProfile(with: errorFetchProfile)
                 break
             }
