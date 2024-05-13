@@ -21,11 +21,14 @@ final class OAuth2Service {
         _ code: String,
         completion: @escaping (Result<String, Error>) -> Void) {
             assert(Thread.isMainThread)
-            if lastCode == code { return }
             task?.cancel()
+            if lastCode == code, let authToken {
+                completion(.success(authToken))
+                return
+            }
             lastCode = code
             let request = authTokenRequest(code: code)
-            let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+            task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
                 switch result {
                 case .success(let body):
                     let authToken = body.accessToken
@@ -35,7 +38,7 @@ final class OAuth2Service {
                     completion(.failure(errorFetchOAuthToken))
                 }
             }
-            task.resume()
+            task?.resume()
         }
 }
 

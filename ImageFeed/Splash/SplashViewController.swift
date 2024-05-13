@@ -101,9 +101,9 @@ final class SplashViewController: UIViewController {
             switch result {
             case .success:
                 self.switchToTabBarController()
-                ProgressHUD.dismiss()
+                UIBlockingProgressHUD.dismiss()
             case .failure:
-                ProgressHUD.dismiss()
+                UIBlockingProgressHUD.dismiss()
             }
         }
     }
@@ -129,6 +129,7 @@ extension SplashViewController: AuthViewControllerDelegate {
                 self.fetchProfile(token: token)
                 UIBlockingProgressHUD.dismiss()
             case .failure(let errorFetchOAuth2Token):
+                print("Error: \(errorFetchOAuth2Token.localizedDescription)")
                 self.showAlertOAuth2Token(with: errorFetchOAuth2Token)
                 UIBlockingProgressHUD.dismiss()
             }
@@ -148,8 +149,9 @@ extension SplashViewController: AuthViewControllerDelegate {
                 self.profileImageService.fetchProfileImageURL(username: profile.username) { _ in }
                 self.switchToTabBarController()
             case .failure(let errorFetchProfile):
-                UIBlockingProgressHUD.dismiss() // скрыть индикатор загрузки
+                print("Error: \(errorFetchProfile.localizedDescription)")
                 self.showAlertProfile(with: errorFetchProfile)
+                UIBlockingProgressHUD.dismiss() // скрыть индикатор загрузки
                 break
             }
         }

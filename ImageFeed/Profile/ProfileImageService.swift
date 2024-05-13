@@ -15,12 +15,15 @@ final class ProfileImageService {
     
     func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
-        if lastUserName == username {return}
         task?.cancel()
+        if lastUserName == username, let avatarURL {
+            completion(.success(avatarURL))
+            return
+        }
         lastUserName = username
         
         let request = makeRequest(username: username)
-        let task = urlSession.objectTask(for: request) {[weak self] (result: Result<UserResult, Error>) in
+        task = urlSession.objectTask(for: request) {[weak self] (result: Result<UserResult, Error>) in
             guard let self = self else {return}
             switch result {
             case .success(let profileImage):
@@ -37,8 +40,7 @@ final class ProfileImageService {
             }
             self.task = nil
         }
-        self.task = task
-        task.resume()
+        task?.resume()
     }
 }
 
