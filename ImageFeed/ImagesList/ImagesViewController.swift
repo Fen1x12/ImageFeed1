@@ -6,8 +6,6 @@ final class ImagesListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        //        tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier) // так таблица настраивается с помощью кода, но в у нас это следано через Main.storyboard
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         
         imageListServiceObserver = NotificationCenter.default
@@ -26,7 +24,7 @@ final class ImagesListViewController: UIViewController {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
-        formatter.string(from: Date()) // "3 May 2016"
+        formatter.string(from: Date())
         return formatter
     }()
     private let showSingleImageSegueIdentifier = "ShowSingleImage"
