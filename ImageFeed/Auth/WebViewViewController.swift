@@ -3,6 +3,8 @@ import WebKit
 
 final class WebViewViewController: UIViewController {
     
+    static let shared = WebViewViewController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -85,7 +87,7 @@ extension WebViewViewController: WKNavigationDelegate {
             let items = urlComponents.queryItems,
             let codeItem = items.first(where: { $0.name == "code" })
         {
-            return codeItem.value    
+            return codeItem.value
         } else {
             return nil
         }
@@ -95,4 +97,18 @@ extension WebViewViewController: WKNavigationDelegate {
 protocol WebViewViewControllerDelegate: AnyObject {
     func webViewViewController (_ vc: WebViewViewController, didAuthenticateWithCode code: String)
     func webViewViewControllerDidCancel(_ vc: WebViewViewController)
+}
+
+//MARK: - Очищаем куки веб-браузера
+
+extension WebViewViewController {
+    
+    func webViewClean() {
+        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast) 
+        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
+            records.forEach { record in
+                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
+            }
+        }
+    }
 }
