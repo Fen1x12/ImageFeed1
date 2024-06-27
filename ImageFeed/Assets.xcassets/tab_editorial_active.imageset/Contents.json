@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Activetab_editorial_active.png",
+      "filename" : "person.crop.rectangle.stack.fill x1.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Activetab_editorial_active 1.png",
+      "filename" : "person.crop.rectangle.stack.fill x2.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Activetab_editorial_active 2.png",
+      "filename" : "person.crop.rectangle.stack.fill x3.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

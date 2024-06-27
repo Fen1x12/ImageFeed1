@@ -19,6 +19,7 @@ final class ProfileViewController: UIViewController {
     private let profileService = ProfileService.shared
     private let webVVC = WebViewViewController.shared
 
+    // Жестко установим цвет StatusBar в светлый
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }

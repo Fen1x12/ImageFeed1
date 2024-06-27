@@ -6,6 +6,8 @@ final class ImagesListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Do any additional setup after loading the view.
+        //        tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier) // так таблица настраивается с помощью кода, но в у нас это следано через Main.storyboard
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         
         imageListServiceObserver = NotificationCenter.default
@@ -24,10 +26,10 @@ final class ImagesListViewController: UIViewController {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
-        formatter.string(from: Date())
+        formatter.string(from: Date()) // "3 May 2016"
         return formatter
     }()
-    private let showSingleImageSegueIdentifier = "ShowSingleImage"
+    private let showSingleImageSegueIdentifier = "ShowSingleImage" // убераем дублирование в коде
     private var imageListService = ImagesListService.shared
     private var photosList: [Photo] = []
     private var imageListServiceObserver: NSObjectProtocol?
@@ -59,7 +61,7 @@ extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
-    }
+    } // Этот метод отвечает за действия, которые будут выполнены при тапе по ячейке таблицы
 }
 
 extension ImagesListViewController: ImagesListCellDelegate {
@@ -70,7 +72,7 @@ extension ImagesListViewController: ImagesListCellDelegate {
         }
         
         let photo = photosList[indexPath.row]
-        UIBlockingProgressHUD.show()
+        UIBlockingProgressHUD.show() // Покажем лоадер
         imageListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { [weak self] result in
             guard let self = self else {
                 return
@@ -78,13 +80,14 @@ extension ImagesListViewController: ImagesListCellDelegate {
             
             switch result {
             case .success:
-                self.photosList = self.imageListService.photos
-                cell.setIsLiked(isLiked: !photo.isLiked)
+                self.photosList = self.imageListService.photos // Синхронизируем массив картинок с сервисом
+                cell.setIsLiked(isLiked: !photo.isLiked) // Изменим индикацию лайка картинки
+                // Покажем, что что-то пошло не так
             case .failure(let error):
                 print("imageListCellDidTapLike Error: \(error)")
                 self.showErrorAlert()
             }
-            UIBlockingProgressHUD.dismiss()
+            UIBlockingProgressHUD.dismiss() // Уберём лоадер
         }
     }
     
@@ -103,14 +106,14 @@ extension ImagesListViewController: ImagesListCellDelegate {
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier, for: indexPath) // 1 Мы использовали здесь метод, который из всех ячеек, зарегистрированных в таблице, возвращает ячейку по идентификатору, добавленному ранее.
         
-        guard let imageListCell = cell as? ImagesListCell else {
+        guard let imageListCell = cell as? ImagesListCell else { // 2 бы работать с ячейкой как с экземпляром класса ImagesListCell, нам надо провести приведение типов
             return UITableViewCell()
         }
         imageListCell.delegate = self
-        configCell(for: imageListCell, with: indexPath)
-        return imageListCell
+        configCell(for: imageListCell, with: indexPath) // 3
+        return imageListCell // 4 Возвращаем ячейку. Возврат будет успешен, так как наша ячейка является наследником UITableViewCell
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -158,9 +161,9 @@ extension ImagesListViewController {
         cell.setIsLiked(isLiked: photosList[indexPath.row].isLiked)
         let photo = photosList[indexPath.row]
         if let photoCreatedAt = photo.createdAt {
-            cell.dataLabel.text = dateFormatter.string(from: photoCreatedAt)
+            cell.dateLabel.text = dateFormatter.string(from: photoCreatedAt)
         } else {
-            cell.dataLabel.text = ""
+            cell.dateLabel.text = ""
         }
     }
 }

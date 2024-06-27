@@ -21,14 +21,11 @@ final class OAuth2Service {
         _ code: String,
         completion: @escaping (Result<String, Error>) -> Void) {
             assert(Thread.isMainThread)
+            if lastCode == code { return }
             task?.cancel()
-            if lastCode == code, let authToken {
-                completion(.success(authToken))
-                return
-            }
             lastCode = code
             let request = authTokenRequest(code: code)
-            task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+            let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
                 switch result {
                 case .success(let body):
                     let authToken = body.accessToken
@@ -38,14 +35,15 @@ final class OAuth2Service {
                     completion(.failure(errorFetchOAuthToken))
                 }
             }
-            task?.resume()
+            task.resume()
         }
 }
 
 // MARK: -
 
 extension OAuth2Service {
-
+    
+    // Функция POST запроса в соответствии с API unsplash
     private func authTokenRequest(code: String) -> URLRequest {
         URLRequest.makeHTTPRequest(
             path: "/oauth/token"
@@ -58,7 +56,8 @@ extension OAuth2Service {
             baseURL: URL(string: "https://unsplash.com")!
         )
     }
-
+    
+    // Структура POST ответов в соответвсвии с API unsplash
     private struct OAuthTokenResponseBody: Decodable {
         let accessToken: String
         let tokenType: String

@@ -3,7 +3,7 @@ import UIKit
 
 final class AuthViewController: UIViewController {
     
-    private let showWebViewSegueIdentifier = "ShowWebView" 
+    private let showWebViewSegueIdentifier = "ShowWebView" //Добавим значение этого (ShowWebView) идентификатора в код класса AuthViewController — оно пригодится нам в дальнейшем.
     weak var delegate: AuthViewControllerDelegate?
     private let oAuth2Service = OAuth2Service.shared
     private let oAuth2TokenStorage = OAuth2TokenStorage.shared
