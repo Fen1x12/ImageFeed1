@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		841383B62C52526400303398 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 841383B42C52526400303398 /* Main.storyboard */; };
+		841383B92C53D99000303398 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 841383B72C53D99000303398 /* Main.storyboard */; };
 		841B01572C11C7BB003D4E18 /* ImagesListService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B01562C11C7BB003D4E18 /* ImagesListService.swift */; };
 		8424B0162BD6B90B0096F987 /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 8424B0152BD6B90B0096F987 /* ProgressHUD */; };
 		8424B0192BD6BD550096F987 /* ProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8424B0182BD6BD550096F987 /* ProgressHUD.swift */; };
@@ -34,7 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		841383B52C52526400303398 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = ../../test/ImageFeed/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		841383B82C53D99000303398 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = ../../test/ImageFeed/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		841B01562C11C7BB003D4E18 /* ImagesListService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListService.swift; sourceTree = "<group>"; };
 		8424B0182BD6BD550096F987 /* ProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressHUD.swift; sourceTree = "<group>"; };
 		8424B01A2BD6BDEA0096F987 /* ProfileImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageService.swift; sourceTree = "<group>"; };
@@ -155,7 +155,7 @@
 				84BD20B32BA44C23008FEF90 /* SceneDelegate.swift */,
 				84BD20B12BA44C23008FEF90 /* AppDelegate.swift */,
 				84BD20BA2BA44C25008FEF90 /* Assets.xcassets */,
-				841383B42C52526400303398 /* Main.storyboard */,
+				841383B72C53D99000303398 /* Main.storyboard */,
 				84BD20BC2BA44C25008FEF90 /* LaunchScreen.storyboard */,
 				84BD20BF2BA44C25008FEF90 /* Info.plist */,
 			);
@@ -259,7 +259,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				841383B62C52526400303398 /* Main.storyboard in Resources */,
+				841383B92C53D99000303398 /* Main.storyboard in Resources */,
 				84BD20BB2BA44C25008FEF90 /* Assets.xcassets in Resources */,
 				84BD20BE2BA44C25008FEF90 /* Base in Resources */,
 			);
@@ -296,10 +296,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		841383B42C52526400303398 /* Main.storyboard */ = {
+		841383B72C53D99000303398 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				841383B52C52526400303398 /* Base */,
+				841383B82C53D99000303398 /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
