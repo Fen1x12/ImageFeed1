@@ -1,112 +1,106 @@
+//
+//  WebViewViewController.swift
+//  ImageFeed
+//
+//  Created by Victoria Isaeva on 04.07.2023.
+//
+
 import UIKit
 import WebKit
 
+fileprivate let UnsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
+
+protocol WebViewViewControllerDelegate: AnyObject {
+    func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String)
+    func webViewViewControllerDidCancel(_ vc: WebViewViewController)
+}
+
 final class WebViewViewController: UIViewController {
     
-    static let shared = WebViewViewController()
+    weak var delegate: WebViewViewControllerDelegate?
+    private var estimatedProgressObservation: NSKeyValueObservation?
+    
+    @IBOutlet private var webView: WKWebView!
+    @IBOutlet private var progressView: UIProgressView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.modalPresentationCapturesStatusBarAppearance = true
+        webView.navigationDelegate = self
+        makeRequest()
         
-        var urlComponents = URLComponents(string: UnsplashAuthorizeURLString)!  //1 инициализируем структуру URLComponents с указанием адреса запроса
+        estimatedProgressObservation = webView.observe(
+            \.estimatedProgress,
+             options: [],
+             changeHandler: { [ weak self ] _, _ in
+                 guard let self = self else { return }
+                 self.updateProgress()
+             })
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .darkContent
+    }
+    
+    private func makeRequest() {
+        guard var urlComponents = URLComponents(string: UnsplashAuthorizeURLString) else {
+            assertionFailure("Incorrect base URL")
+            return
+        }
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: Constants.accessKey),                  //2 устанавливаем значение client_id — код доступа нашего приложения
-            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),             //3 устанавливаем значение redirect_uri — URI, который обрабатывает успешную авторизацию пользователя
-            URLQueryItem(name: "response_type", value: "code"),                 //4 устанавливаем значение response_type — тип ответа, который мы ожидаем. Unsplash ожидает от нас значения code
-            URLQueryItem(name: "scope", value: Constants.accessScope)                     //5 устанавливаем значение scope — списка доступов, разделённых плюсом
+            URLQueryItem(name: "client_id", value: AccessKey),
+            URLQueryItem(name: "redirect_uri", value: RedirectURI),
+            URLQueryItem(name: "response_type", value: "code"),
+            URLQueryItem(name: "scope", value: AccessScope)
         ]
-        let url = urlComponents.url!                                            //6 поле urlComponents.url содержит нужный нам URL, используем implicit unwrap, так как если URL не сформируется, то это будет критической ошибкой
+        guard let url = urlComponents.url else {
+            assertionFailure("Fail to make URL")
+            return
+        }
         
         let request = URLRequest(url: url)
         webView.load(request)
-        webView.navigationDelegate = self
-    }
-    
-    // Подписываемся для наблюдения
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
-    }
-    
-    // Обязательно отписываемся от подписки
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
-    }
-    
-    private let UnsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
-    weak var delegate: WebViewViewControllerDelegate?
-    
-    @IBOutlet private var webView: WKWebView!
-    @IBAction private func didTapBackButton(_ sender: Any?) {
-        delegate?.webViewViewControllerDidCancel(self)
-    }
-    @IBOutlet private var progressView: UIProgressView!
-    
-    //MARK: - Обработчик обновлений состояния загрузки в progressView
-    
-    override func observeValue(
-        forKeyPath keyPath: String?,
-        of object: Any?,
-        change: [NSKeyValueChangeKey : Any]?,
-        context: UnsafeMutableRawPointer?
-    ) {
-        if keyPath == #keyPath(WKWebView.estimatedProgress) {
-            updateProgress()
-        } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-        }
     }
     
     private func updateProgress() {
         progressView.progress = Float(webView.estimatedProgress)
         progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
     }
+    
+    @IBAction private func didTapBackButton(_ sender: Any?) {
+        delegate?.webViewViewControllerDidCancel(self) }
 }
 
-// MARK: -
-
 extension WebViewViewController: WKNavigationDelegate {
-    func webView(
-        _ webView: WKWebView,
-        decidePolicyFor navigationAction: WKNavigationAction,
-        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {
-        if let code = code(from: navigationAction) { // 1 Мы вызываем функцию code(from:) с параметром navigationAction. Она возвращает код авторизации, если он получен
-            //TODO: process code                     //2 Мы пока не обрабатываем полученный код. Оставим себе комментарий вида //TODO:, чтобы не забыть сделать это в дальнейшем. Xcode выделяет такие комментарии предупреждениями
+        if let code = code(from: navigationAction) {
             delegate?.webViewViewController(self, didAuthenticateWithCode: code)
-            decisionHandler(.cancel) //3 Если код успешно получен, отменяем навигационное действие
+            decisionHandler(.cancel)
         } else {
-            decisionHandler(.allow) //4 Если код не получен, разрешаем навигационное действие. Возможно, пользователь просто переходит на новую страницу в рамках процесса авторизации
+            decisionHandler(.allow)
         }
     }
     
     private func code(from navigationAction: WKNavigationAction) -> String? {
         if
-            let url = navigationAction.request.url,                         //1 Получаем из навигационного действия navigationAction URL
-            let urlComponents = URLComponents(string: url.absoluteString),  //2 Создаём уже известную нам структуру URLComponents. Только теперь мы будем не формировать URL с помощью компонентов, а наоборот — получать значения компонентов из URL
-            urlComponents.path == "/oauth/authorize/native",                //3 Проверяем, совпадает ли адрес запроса с адресом получения кода
-            let items = urlComponents.queryItems,                           //4 Проверяем, есть ли в URLComponents компоненты запроса (в них должен быть код). Компонент запроса URLQueryItem — это структура, которая содержит имя компонента name и его значение value
-            let codeItem = items.first(where: { $0.name == "code" })        //5 Ищем в массиве компонентов такой компонент, у которого значение name == code
+            let url = navigationAction.request.url,
+            let urlComponents = URLComponents(string: url.absoluteString),
+            urlComponents.path == "/oauth/authorize/native",
+            let items = urlComponents.queryItems,
+            let codeItem = items.first(where: { $0.name == "code" })
         {
-            return codeItem.value                                           //6 Если все проверки выше прошли успешно, возвращаем значение value найденного компонента. Иначе возвращаем nil
+            return codeItem.value
         } else {
             return nil
         }
     }
 }
 
-protocol WebViewViewControllerDelegate: AnyObject {
-    func webViewViewController (_ vc: WebViewViewController, didAuthenticateWithCode code: String)
-    func webViewViewControllerDidCancel(_ vc: WebViewViewController)
-}
-
-//MARK: - Очищаем куки веб-браузера
-
 extension WebViewViewController {
-    
-    func webViewClean() {
-        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast) // очищаются cookie веб-браузера
+    static func clean() {
+        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
         WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
             records.forEach { record in
                 WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})

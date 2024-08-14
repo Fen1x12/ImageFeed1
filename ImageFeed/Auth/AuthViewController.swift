@@ -1,18 +1,33 @@
+//
+//  AuthViewController.swift
+//  ImageFeed
+//
+//  Created by Victoria Isaeva on 04.07.2023.
+//
+
 import UIKit
 
+protocol AuthViewControllerDelegate: AnyObject {
+    func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String)
+}
 
 final class AuthViewController: UIViewController {
-    
-    private let showWebViewSegueIdentifier = "ShowWebView" //Добавим значение этого (ShowWebView) идентификатора в код класса AuthViewController — оно пригодится нам в дальнейшем.
+    static let storyboardID = "AuthViewController"
     weak var delegate: AuthViewControllerDelegate?
-    private let oAuth2Service = OAuth2Service.shared
-    private let oAuth2TokenStorage = OAuth2TokenStorage.shared
+    private let webViewIdentifier = "ShowWebView"
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationController?.navigationBar.barStyle = .black
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == showWebViewSegueIdentifier {
-            guard
-                let webViewViewController = segue.destination as? WebViewViewController
-            else { fatalError("Failed to prepare for \(showWebViewSegueIdentifier)") }
+        if segue.identifier == webViewIdentifier {
+            guard let webViewViewController = segue.destination as? WebViewViewController
+            else {
+                assertionFailure("Failed to prepare for \(webViewIdentifier)")
+                return
+            }
             webViewViewController.delegate = self
         } else {
             super.prepare(for: segue, sender: sender)
@@ -28,8 +43,4 @@ extension AuthViewController: WebViewViewControllerDelegate {
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         dismiss(animated: true)
     }
-}
-
-protocol AuthViewControllerDelegate: AnyObject {
-    func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String)
 }

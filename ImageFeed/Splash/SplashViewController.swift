@@ -1,43 +1,35 @@
+//
+//  SplashViewController.swift
+//  ImageFeed
+//
+//  Created by Victoria Isaeva on 09.07.2023.
+//
+
 import UIKit
 import ProgressHUD
-import SwiftKeychainWrapper
-
-//MARK: -
 
 final class SplashViewController: UIViewController {
-    
-    private let oAuth2Service = OAuth2Service.shared
-    private let oAuth2TokenStorage = OAuth2TokenStorage.shared
+    private let oauth2Service = OAuth2Service()
+    private let oauth2TokenStorage = OAuth2TokenStorage()
     private let profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
-    private var isFirstLaunch = true
-    private let splashLogoImage: UIImageView = {
-        let image = UIImage(named: "Vector")
-        let imageView = UIImageView(image: image)
-        return imageView
-    }()
+    private let splashImage = UIImageView()
+    private var splashImageView = UIImage(named:"splash_screen_logo")
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        mainSplash()
+        view.backgroundColor = UIColor(named: "YP Black")
+        setupSplashConstraints()
+        setupViews()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if isFirstLaunch {
-            if oAuth2TokenStorage.token != nil {
-                guard let token = oAuth2TokenStorage.token else { return }
-                fetchProfile(token: token)
-            } else {
-                let storyBoard = UIStoryboard(name: "Main", bundle: nil)
-                guard let authViewController = storyBoard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController else {return}
-                authViewController.delegate = self
-                authViewController.modalPresentationStyle = .fullScreen
-                self.present(authViewController, animated: true)
-            }
+        if let token = oauth2TokenStorage.token {
+            fetchProfile(token: token)
+        } else {
+            switchToAuthViewController()
         }
-        isFirstLaunch = false
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -45,133 +37,97 @@ final class SplashViewController: UIViewController {
         setNeedsStatusBarAppearanceUpdate()
     }
     
-    private func mainSplash() {
-        
-        self.view.backgroundColor = #colorLiteral(red: 0.1019607843, green: 0.1058823529, blue: 0.1333333333, alpha: 1)
-        
-        //MARK: - Констрейнты
-        
-        func applyConstraints() {
-            NSLayoutConstraint.activate([
-                splashLogoImage.heightAnchor.constraint(equalToConstant: 78),
-                splashLogoImage.widthAnchor.constraint(equalToConstant: 75),
-                splashLogoImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-                splashLogoImage.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-            ])
-        }
-        
-        func addSubview() {
-            view.addSubview(splashLogoImage)
-            splashLogoImage.translatesAutoresizingMaskIntoConstraints = false
-            applyConstraints()
-        }
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
     }
     
-    //MARK: -
-    
-    private func checkAuthToken() {
-        if oAuth2TokenStorage.token != nil {
-            guard let token = oAuth2TokenStorage.token else {
-                return
-            }
-            UIBlockingProgressHUD.show() // показать индикатор загрузки
-            fetchProfile(token: token)
-        } else {
-            let storyboard = UIStoryboard(name: "Main", bundle: .main)
-            guard let authViewController =
-                    storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController else {
-                return
-            }
-            authViewController.delegate = self
-            authViewController.modalPresentationStyle = .fullScreen
-            self.present(authViewController, animated: true)
+    func showErrorAlert() {
+        let alert = UIAlertController(
+            title: "Что-то пошло не так",
+            message: "Не удалось войти в систему",
+            preferredStyle: .alert
+        )
+        let action = UIAlertAction(title: "Ок", style: .cancel) { [weak self] _ in
+            guard let self else { return }
+            self.switchToAuthViewController()
         }
+        alert.addAction(action)
+        present(alert, animated: true)
+    }
+    
+    private func setupViews() {
+        view.addSubview(splashImage)
     }
     
     private func switchToTabBarController() {
-        guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Invalid Configuration")
+            return
+        }
         let tabBarController = UIStoryboard(name: "Main", bundle: .main)
             .instantiateViewController(withIdentifier: "TabBarViewController")
         window.rootViewController = tabBarController
     }
     
-    private func fetchOAuthToken(_ code: String) {
-        oAuth2Service.fetchOAuthToken(code) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success:
-                self.switchToTabBarController()
-                ProgressHUD.dismiss() // скрыть индикатор загрузки
-            case .failure:
-                ProgressHUD.dismiss() // скрыть индикатор загрузки
-            }
-        }
+    private func switchToAuthViewController() {
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
+        guard let authViewController = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController else { return }
+        authViewController.delegate = self
+        authViewController.modalPresentationStyle = .fullScreen
+        
+        present(authViewController, animated: true)
     }
 }
 
-//MARK: -
-
 extension SplashViewController: AuthViewControllerDelegate {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
-        dismiss(animated: true) { [weak self] in
-            guard let self = self else { return }
-            UIBlockingProgressHUD.show() // показать индикатор загрузки
-            self.fetchOAuth2Token(code)
-        }
+        UIBlockingProgressHUD.show()
+        self.fetchOAuthToken(code)
     }
     
-    private func fetchOAuth2Token(_ code: String) {
-        oAuth2Service.fetchOAuthToken(code) { [ weak self ] result in
-            guard let self = self else {return}
+    private func fetchOAuthToken(_ code: String) {
+        UIBlockingProgressHUD.show()
+        oauth2Service.fetchOAuthToken(code) { [weak self] result in
+            guard let self = self else { return }
+            
             switch result {
             case .success(let token):
-                self.oAuth2TokenStorage.token = token
-                self.fetchProfile(token: token)
+                oauth2TokenStorage.token = token
+                fetchProfile(token: token)
                 UIBlockingProgressHUD.dismiss()
-            case .failure(let errorFetchOAuth2Token):
-                self.showAlertOAuth2Token(with: errorFetchOAuth2Token)
+                
+            case .failure:
                 UIBlockingProgressHUD.dismiss()
+                showErrorAlert()
             }
         }
     }
-    
-    // MARK: -
     
     private func fetchProfile(token: String) {
         profileService.fetchProfile(token) { [weak self] result in
-            guard let self = self else {
-                return
-            }
-            UIBlockingProgressHUD.dismiss() // скрыть индикатор загрузки
+            guard let self else { return }
+            
             switch result {
             case .success(let profile):
-                self.profileImageService.fetchProfileImageURL(username: profile.username) { _ in }
-                self.switchToTabBarController()
-            case .failure(let errorFetchProfile):
-                UIBlockingProgressHUD.dismiss() // скрыть индикатор загрузки
-                self.showAlertProfile(with: errorFetchProfile)
-                break
+                ProfileImageService.shared.fetchProfileImageURL(userName: profile.userName ?? " ") { [weak self] _ in
+                    self?.switchToTabBarController()
+                }
+            case .failure:
+                self.showErrorAlert()
             }
+            UIBlockingProgressHUD.dismiss()
         }
     }
     
-    // MARK: -
-    
-    private func showAlertProfile(with errorFetchProfile: Error) {
-        let alert = UIAlertController(
-            title: "Что-то пошло не так",
-            message: "Не удалось получить Профиль пользователя",
-            preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ок", style: .cancel))
-        self.present(alert, animated: true, completion: nil)
-    }
-    
-    private func showAlertOAuth2Token(with errorFetchOAuth2Token: Error) {
-        let alert = UIAlertController(
-            title: "Что-то пошло не так",
-            message: "Не удалось получить Токен",
-            preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Ок", style: .cancel))
-        self.present(alert, animated: true, completion: nil)
+    private func setupSplashConstraints() {
+        splashImage.image = splashImageView
+        splashImage.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(splashImage)
+        
+        NSLayoutConstraint.activate([
+            splashImage.widthAnchor.constraint(equalToConstant: 72.5),
+            splashImage.heightAnchor.constraint(equalToConstant: 75),
+            splashImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            splashImage.centerYAnchor.constraint(equalTo: view.centerYAnchor)])
     }
 }

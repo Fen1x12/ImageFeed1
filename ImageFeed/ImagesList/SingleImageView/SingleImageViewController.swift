@@ -1,49 +1,109 @@
-import UIKit
+//
+//  File.swift
+//  ImageFeed
+//
+//  Created by Victoria Isaeva on 12.06.2023.
+//
 
+import UIKit
 
 final class SingleImageViewController: UIViewController {
     
-    @IBOutlet private var imageView: UIImageView!
-    @IBAction private func didTapShareButton(_ sender: Any) {
-        guard let image = imageView.image else { return }
-        let sharingButton = UIActivityViewController(activityItems: [image as Any], applicationActivities: nil)
-        sharingButton.popoverPresentationController?.sourceView = self.view // Ближайший всплывающий контроллер
-        self.present(sharingButton, animated: true, completion: nil)
-    }
-    @IBOutlet private var scrollView: UIScrollView!
-    @IBAction private func didTapBackButton() {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    // Жестко установим цвет StatusBar в светлый
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
-    
-    
-    //MARK: - «Научим» SingleViewController показывать разные картинки, не инициируя загрузку view
-    
-    var image: UIImage! {
-        didSet {
-            guard isViewLoaded else { return } // сначала мы проверяем, было ли ранее загружено view. Это очень важная проверка, необходимая, чтобы не закрэшиться, если view ещё не было загружено (и, соответственно, аутлет ещё не инициализирован). Именно эта проверка не даст нам закрэшиться из prepareForSegue
-            imageView.image = image // В эту точку мы не должны попадать из prepareForSegue. Мы можем попасть в неё, например, если был показан SingleImageViewController, а указатель на него был запомнен извне. Далее  — извне (например, по свайпу) в него проставляется новое изображение
-            rescaleAndCenterImageInScrollView(image: image)
-        }
-    }
-    
-    var fullImageURL: URL!
+    var image: URL?
+    private var imageDownload: UIImage?
+    @IBOutlet private weak var scrollView: UIScrollView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         scrollView.minimumZoomScale = 0.1
         scrollView.maximumZoomScale = 1.25
-        showImageList()
+        loadAndShowImage(url: image)
+    }
+    
+    func loadAndShowImage(url: URL?) {
+        guard let url = url else { return }
+        UIBlockingProgressHUD.show()
+        
+        imageView.kf.setImage(with: url) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            guard let self else { return }
+            
+            switch result {
+            case .success(let imageResult):
+                self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+                self.imageDownload = imageResult.image
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+                self.showError(url: url)
+            }
+        }
+    }
+    
+    func compressImage(_ image: UIImage) -> UIImage {
+        let targetSizeInMB: Double = 10.0
+        let maxCompressionIterations = 5
+        
+        var compressedImage = image
+        var currentSizeInMB = Double(compressedImage.pngData()?.count ?? 0) / (1024.0 * 1024.0)
+        var iteration = 0
+        
+        while currentSizeInMB > targetSizeInMB && iteration < maxCompressionIterations {
+            let compressionRatio: CGFloat = CGFloat(targetSizeInMB / currentSizeInMB)
+            let newWidth = Int(compressedImage.size.width * sqrt(compressionRatio))
+            let newHeight = Int(compressedImage.size.height * sqrt(compressionRatio))
+            let newImageSize = CGSize(width: newWidth, height: newHeight)
+            
+            UIGraphicsBeginImageContext(newImageSize)
+            compressedImage.draw(in: CGRect(origin: .zero, size: newImageSize))
+            if let resizedImage = UIGraphicsGetImageFromCurrentImageContext() {
+                compressedImage = resizedImage
+                currentSizeInMB = Double(compressedImage.pngData()?.count ?? 0) / (1024.0 * 1024.0)
+            }
+            UIGraphicsEndImageContext()
+            iteration += 1
+        }
+        self.imageDownload = compressedImage
+        return compressedImage
+    }
+    
+    func showShareActivityController() {
+        guard let imageDownload = imageDownload else { return }
+        
+        let share = UIActivityViewController(
+            activityItems: [compressImage(imageDownload)],
+            applicationActivities: nil
+        )
+        share.overrideUserInterfaceStyle = .dark
+        present(share, animated: true, completion: nil)
+    }
+    @IBOutlet private var imageView: UIImageView!
+    @IBAction private func didTapBackButton(_ sender: UIButton) {
+        dismiss(animated: true, completion: nil)
+    }
+    @IBAction private func didTapShareButton(_ sender: UIButton) {
+        showShareActivityController()
+    }
+}
+
+extension SingleImageViewController: UIScrollViewDelegate {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        imageView
+    }
+    
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        let imageViewSize = imageView.frame.size
+        let scrollViewSize = scrollView.bounds.size
+        let verticalPadding = imageViewSize.height < scrollViewSize.height ? (scrollViewSize.height - imageViewSize.height) / 2 : 0
+        let horizontalPadding = imageViewSize.width < scrollViewSize.width ? (scrollViewSize.width - imageViewSize.width) / 2 : 0
+        
+        scrollView.contentInset = UIEdgeInsets(top: verticalPadding, left: horizontalPadding, bottom: verticalPadding, right: horizontalPadding)
     }
     
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = scrollView.minimumZoomScale
         let maxZoomScale = scrollView.maximumZoomScale
-        view.layoutIfNeeded()
+        scrollView.layoutIfNeeded()
         let visibleRectSize = scrollView.bounds.size
         let imageSize = image.size
         let hScale = visibleRectSize.width / imageSize.width
@@ -56,46 +116,23 @@ final class SingleImageViewController: UIViewController {
         let y = (newContentSize.height - visibleRectSize.height) / 2
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
-    
-    func showImageList() {
-        UIBlockingProgressHUD.show()
-        imageView.kf.setImage(with: fullImageURL) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let image):
-                
-                self.rescaleAndCenterImageInScrollView(image: image.image)
-            case .failure:
-                self.showErrorAlert()
-            }
-            UIBlockingProgressHUD.dismiss()
+}
+
+extension SingleImageViewController {
+    private func showError(url: URL) {
+        let alert = UIAlertController(title: "Что-то пошло не так.", message: "Попробовать ещё раз?", preferredStyle: .alert)
+        let repeats = UIAlertAction(title: "Повторить", style: .default) { [weak self] _ in
+            guard let self else { return }
+            self.loadAndShowImage(url: url)
         }
-    }
-    
-    private func showErrorAlert() {
-        let alert = UIAlertController(
-            title: "Что-то пошло не так",
-            message: "Попробовать ещё раз?",
-            preferredStyle: .alert
-        )
-        
-        let dismissAction = UIAlertAction(title: "Нет", style: .default ) { _ in
+        let cancel = UIAlertAction(title: "Не надо", style: .cancel) { _ in
             alert.dismiss(animated: true)
         }
         
-        let retryAction = UIAlertAction(title: "Попробовать еше раз?", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            self.showImageList()
-        }
+        alert.addAction(cancel)
+        alert.addAction(repeats)
         
-        alert.addAction(dismissAction)
-        alert.addAction(retryAction)
-        self.present(alert, animated: true)
+        present(alert, animated: true)
     }
 }
 
-extension SingleImageViewController: UIScrollViewDelegate {
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        imageView
-    }
-}

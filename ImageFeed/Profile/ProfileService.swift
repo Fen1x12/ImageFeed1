@@ -1,57 +1,71 @@
+//
+//  ProfileService.swift
+//  ImageFeed
+//
+//  Created by Victoria Isaeva on 14.07.2023.
+//
+
 import Foundation
 
-// MARK: -
-
 final class ProfileService {
-    
-    private let urlSession = URLSession.shared
-    private var task: URLSessionTask?
-    private let decoder = JSONDecoder()
-    private(set) var profile: Profile?
     static let shared = ProfileService()
-    private var lastCode: String?
-    
+    private(set) var profile: Profile?
+    private var task: URLSessionTask?
+    private let urlSession = URLSession.shared
     
     func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
-        assert(Thread.isMainThread)
-        if lastCode == token {return}
         task?.cancel()
-        lastCode = token
-        
-        let request = makeRequest(token: token)
-        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>)  in
-            guard let self = self else { return }
-            switch result {
+        if task != nil {
+            return
+        }
+        guard let request = profileRequest(token: token) else {
+            assertionFailure("Invalid request")
+            completion(.failure(NetworkError.invalidRequest))
+            return
+        }
+        let task = urlSession.objectTask(for: request) { [ weak self ] (response: Result<ProfileResult, Error>) in
+            self?.task = nil
+            switch response {
             case .success(let profileResult):
-                self.profile = Profile(result: profileResult)
-                guard let profile = self.profile else {return}
-                completion(.success(profile))
-                self.profile = profile
-                self.task = nil
+                let profile = self?.loadProfile(from: profileResult)
+                
+                self?.profile = profile
+                
+                if let profile = profile {
+                    completion(.success(profile))
+                } else {
+                    completion(.failure(NetworkError.invalidResponse))
+                }
             case .failure(let error):
                 completion(.failure(error))
-                self.lastCode = nil
             }
         }
         self.task = task
         task.resume()
     }
-}
-
-// MARK: -
-
-extension ProfileService {
     
-    private func makeRequest(token: String) -> URLRequest {
-        var urlComponents = URLComponents()
-        urlComponents.path = "/me"
-        guard let url = urlComponents.url(relativeTo: Constants.defaultBaseURL) else {
-            assertionFailure("Failed to create URL")
-            return URLRequest(url: URL(string: "")!)
+    private func loadProfile(from result: ProfileResult) -> Profile {
+        let name = "\(result.firstName ?? "") \(result.lastName ?? "")"
+        let  loginName = "@\(result.userName ?? "")"
+        
+        let profile = Profile(
+            userName: result.userName ?? "",
+            name: name,
+            loginName: loginName,
+            bio: result.bio ?? ""
+        )
+        return profile
+    }
+    
+    private func profileRequest(token: String) -> URLRequest? {
+        guard let url = URL(string:"https://api.unsplash.com/me") else {
+            return nil
         }
-        var request = URLRequest(url: url)
+        var request = URLRequest(url:url)
         request.httpMethod = "GET"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
         return request
     }
 }
+

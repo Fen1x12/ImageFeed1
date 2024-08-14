@@ -1,16 +1,32 @@
+//
+//  TabBarController.swift
+//  ImageFeed
+//
+//  Created by Victoria Isaeva on 23.07.2023.
+//
+
 import UIKit
 
-final class TabBarViewController: UITabBarController {
-    
+final class TabBarController: UITabBarController {
     override func awakeFromNib() {
         super.awakeFromNib()
-        let storyBoard = UIStoryboard(name: "Main", bundle: .main)
+        let storyboard = UIStoryboard(name: "Main", bundle: .main)
         
-        let imagesListViewController = storyBoard.instantiateViewController(withIdentifier: "ImagesListViewController")
-        let profileViewController = storyBoard.instantiateViewController(withIdentifier: "ProfileViewController")
-        profileViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(named: "tab_profile_active"), selectedImage: nil)
-        imagesListViewController.tabBarItem = UITabBarItem(title: nil, image: UIImage(named: "tab_editorial_active"), selectedImage: nil)
+        let imagesListViewController = storyboard.instantiateViewController(
+            withIdentifier: "ImagesListViewController")
         
+        imagesListViewController.tabBarItem = UITabBarItem(
+            title: nil,
+            image: UIImage(named: "tab_editorial_active"),
+            selectedImage: nil
+        )
+        
+        let profileViewController = ProfileViewController()
+        profileViewController.tabBarItem = UITabBarItem(
+            title: nil,
+            image: UIImage(named: "tab_profile_active"),
+            selectedImage: nil
+        )
         self.viewControllers = [imagesListViewController, profileViewController]
     }
 }
