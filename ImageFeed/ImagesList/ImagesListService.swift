@@ -22,9 +22,9 @@ final class ImagesListService {
     func fetchPhotosNextPage() {
         assert(Thread.isMainThread)
         
+        // Если текущая задача не завершена, не начинаем новую загрузку
         guard currentTask == nil else { return }
         
-        // Использование дефолтного значения через ??
         let nextPage = (lastLoadedPage ?? 0) + 1
         page = nextPage
         
@@ -50,10 +50,17 @@ final class ImagesListService {
                     
                 case .failure(let error):
                     print(error.localizedDescription)
+                    
+                    // Сбрасываем currentTask при неудачной загрузке, чтобы попытаться заново
+                    self.currentTask = nil
                 }
             }
+            
+            // Обязательно сбрасываем currentTask при завершении задачи, чтобы разрешить последующие вызовы
             self.currentTask = nil
         }
+        
+        // Назначаем задачу и запускаем ее
         self.currentTask = task
         task.resume()
     }
