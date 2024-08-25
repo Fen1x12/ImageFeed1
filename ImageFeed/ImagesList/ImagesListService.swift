@@ -1,12 +1,4 @@
-//
-//  ImagesListService.swift
-//  ImageFeed
-//
-//  Created by Victoria Isaeva on 01.08.2023.
-//
-
 import Foundation
-
 final class ImagesListService {
     static let shared = ImagesListService()
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
@@ -15,7 +7,6 @@ final class ImagesListService {
     private var lastLoadedPage: Int?
     private let urlSession = URLSession.shared
     private let dateFormatter = ISO8601DateFormatter()
-    private var page: Int = 1
     
     private init() {}
     
@@ -26,7 +17,6 @@ final class ImagesListService {
         guard currentTask == nil else { return }
         
         let nextPage = (lastLoadedPage ?? 0) + 1
-        page = nextPage
         
         guard let authToken = OAuth2TokenStorage.shared.token else {
             assertionFailure("Failed to make HTTP request")
@@ -42,7 +32,7 @@ final class ImagesListService {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let photoResults):
-                    self.lastLoadedPage = (self.lastLoadedPage ?? 0) + 1
+                    self.lastLoadedPage = nextPage
                     let newPhotos = photoResults.map { Photo($0, date: self.dateFormatter) }
                     self.photos.append(contentsOf: newPhotos)
                     
@@ -74,7 +64,6 @@ final class ImagesListService {
             return
         }
         
-        // Добавление слабой ссылки на self
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<PhotoLiked, Error>) in
             guard let self = self else { return }
             DispatchQueue.main.async {
@@ -89,12 +78,11 @@ final class ImagesListService {
                             height: Int(photo.size.height),
                             createdAt: photo.createdAt?.description,
                             description: photo.welcomeDescription,
-                            urls: UrlsResult(
-                                full: photo.largeImageURL,
-                                regular: photo.regularImageURL,
-                                small: photo.smallImageURL,
-                                thumb: photo.thumbImageURL
-                            ),
+                            urls: UrlsResult(full: photo.largeImageURL,
+                                             regular: photo.regularImageURL,
+                                             small: photo.smallImageURL,
+                                             thumb: photo.thumbImageURL
+                                            ),
                             likedByUser: !photo.isLiked
                         )
                         
@@ -112,6 +100,18 @@ final class ImagesListService {
         }
         self.currentTask = task
         task.resume()
+    }
+    
+    func logout() {
+        // Отмена текущей задачи, если она существует
+        currentTask?.cancel()
+        currentTask = nil
+        
+        // Сброс lastLoadedPage и очистка списка фотографий
+        lastLoadedPage = nil
+        photos = []
+        
+        NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: nil)
     }
 }
 
@@ -153,4 +153,3 @@ private func likeRequest(photoId: String, isLike: Bool) -> URLRequest? {
     
     return request
 }
-
