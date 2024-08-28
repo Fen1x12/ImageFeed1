@@ -50,20 +50,21 @@ final class ImagesListService {
             self.currentTask = nil
         }
         
-        // Назначаем задачу и запускаем ее
+        // Назначаем задачу и запускаем её
         self.currentTask = task
         task.resume()
     }
     
     func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
-        if currentTask != nil {
-            currentTask?.cancel()
-        }
+        // Отменяем текущую задачу, если она существует
+        currentTask?.cancel()
+        currentTask = nil
         
         guard let request = likeRequest(photoId: photoId, isLike: isLike) else {
             return
         }
         
+        // Создаем новую задачу для изменения лайка
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<PhotoLiked, Error>) in
             guard let self = self else { return }
             DispatchQueue.main.async {
@@ -78,14 +79,14 @@ final class ImagesListService {
                             height: Int(photo.size.height),
                             createdAt: photo.createdAt?.description,
                             description: photo.welcomeDescription,
-                            urls: UrlsResult(full: photo.largeImageURL,
-                                             regular: photo.regularImageURL,
-                                             small: photo.smallImageURL,
-                                             thumb: photo.thumbImageURL
-                                            ),
+                            urls: UrlsResult(
+                                full: photo.largeImageURL,
+                                regular: photo.regularImageURL,
+                                small: photo.smallImageURL,
+                                thumb: photo.thumbImageURL
+                            ),
                             likedByUser: !photo.isLiked
                         )
-                        
                         // Обновление информации о фото
                         self.photos[index] = Photo(newPhotoResult, date: self.dateFormatter)
                         NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: nil)
@@ -96,8 +97,13 @@ final class ImagesListService {
                 case .failure(let error):
                     completion(.failure(error))
                 }
+                
+                // Сбрасываем currentTask при завершении задачи
+                self.currentTask = nil
             }
         }
+        
+        // Назначаем задачу и запускаем её
         self.currentTask = task
         task.resume()
     }
