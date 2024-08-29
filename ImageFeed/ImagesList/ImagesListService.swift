@@ -1,4 +1,5 @@
 import Foundation
+
 final class ImagesListService {
     static let shared = ImagesListService()
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
@@ -56,9 +57,8 @@ final class ImagesListService {
     }
     
     func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
-        // Отменяем текущую задачу, если она существует
-        currentTask?.cancel()
-        currentTask = nil
+        // Если текущая задача не завершена, не начинаем новую загрузку
+        guard currentTask == nil else { return }
         
         guard let request = likeRequest(photoId: photoId, isLike: isLike) else {
             return
@@ -87,6 +87,7 @@ final class ImagesListService {
                             ),
                             likedByUser: !photo.isLiked
                         )
+                        
                         // Обновление информации о фото
                         self.photos[index] = Photo(newPhotoResult, date: self.dateFormatter)
                         NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: nil)
@@ -116,8 +117,6 @@ final class ImagesListService {
         // Сброс lastLoadedPage и очистка списка фотографий
         lastLoadedPage = nil
         photos = []
-        
-        NotificationCenter.default.post(name: ImagesListService.didChangeNotification, object: nil)
     }
 }
 
