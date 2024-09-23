@@ -1,10 +1,3 @@
-//
-//  WebViewViewController.swift
-//  ImageFeed
-//
-//  Created by Victoria Isaeva on 04.07.2023.
-//
-
 import UIKit
 import WebKit
 

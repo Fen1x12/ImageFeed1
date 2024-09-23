@@ -1,10 +1,3 @@
-//
-//  SplashViewController.swift
-//  ImageFeed
-//
-//  Created by Victoria Isaeva on 09.07.2023.
-//
-
 import UIKit
 import ProgressHUD
 
