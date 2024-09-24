@@ -7,8 +7,8 @@
 
 import Foundation
 
-let AccessKey = "173GczLPLjlDADGY4F4UvmR6L6AhuV7bEGg6f8wCABA"
-let SecretKey = "-r5iDrSN3H_Xwd-QDbMM6-DTDvWwBGh5Sf6IIhqF_aE"
+let AccessKey = "zlMhopfcl25fMY7_ur-5gBtR8C-JeMFnOCfrXS_FUmk"
+let SecretKey = "iW-WFbqJTqLXWQVk5PSynfJOAXtCqFU3A4GadNO1_Mo"
 let RedirectURI = "urn:ietf:wg:oauth:2.0:oob"
 let AccessScope = "public+read_user+write_likes"
 
@@ -42,3 +42,4 @@ struct AuthConfiguration {
             defaultBaseURL: DefaultBaseURL)
     }
 }
+

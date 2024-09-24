@@ -9,7 +9,7 @@ final class ImagesListService {
     private let urlSession = URLSession.shared
     private let dateFormatter = ISO8601DateFormatter()
     
-    private init() {}
+   public init() {}
     
     func fetchPhotosNextPage() {
         assert(Thread.isMainThread)
