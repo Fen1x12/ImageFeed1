@@ -16,7 +16,6 @@
 		841383C92C6CEF5E00303398 /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841383C82C6CEF5E00303398 /* Profile.swift */; };
 		841383CB2C6CEF7200303398 /* UserResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841383CA2C6CEF7200303398 /* UserResult.swift */; };
 		841383CD2C6CEFBB00303398 /* ProfileImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841383CC2C6CEFBB00303398 /* ProfileImage.swift */; };
-		841383D02C6CF2D400303398 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841383CF2C6CF2D400303398 /* CacheManager.swift */; };
 		841383D32C6CFB5800303398 /* URLSessionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841383D22C6CFB5800303398 /* URLSessionExtension.swift */; };
 		841384012C9F827A00303398 /* ImageFeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841384002C9F827A00303398 /* ImageFeedTests.swift */; };
 		8413840E2CA18F9C00303398 /* ProfileViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8413840D2CA18F9C00303398 /* ProfileViewTests.swift */; };
@@ -99,7 +98,6 @@
 		841383C82C6CEF5E00303398 /* Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		841383CA2C6CEF7200303398 /* UserResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserResult.swift; sourceTree = "<group>"; };
 		841383CC2C6CEFBB00303398 /* ProfileImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImage.swift; sourceTree = "<group>"; };
-		841383CF2C6CF2D400303398 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		841383D22C6CFB5800303398 /* URLSessionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionExtension.swift; sourceTree = "<group>"; };
 		841383FE2C9F827A00303398 /* ImageFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ImageFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		841384002C9F827A00303398 /* ImageFeedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFeedTests.swift; sourceTree = "<group>"; };
@@ -186,14 +184,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		841383CE2C6CEFEC00303398 /* CacheManager */ = {
-			isa = PBXGroup;
-			children = (
-				841383CF2C6CF2D400303398 /* CacheManager.swift */,
-			);
-			path = CacheManager;
-			sourceTree = "<group>";
-		};
 		841383D12C6CFADC00303398 /* URLSessionExtension */ = {
 			isa = PBXGroup;
 			children = (
@@ -346,7 +336,6 @@
 			children = (
 				8413843E2CA2DB1500303398 /* AuthHelper */,
 				8424B01D2BE0FEA80096F987 /* Models */,
-				841383CE2C6CEFEC00303398 /* CacheManager */,
 				8424B0172BD6BD460096F987 /* UIBlockingProgressHUD */,
 				841383D12C6CFADC00303398 /* URLSessionExtension */,
 				8427A2EC2BC808890010E868 /* OAuth */,
@@ -638,7 +627,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				841383D02C6CF2D400303398 /* CacheManager.swift in Sources */,
 				8427A2F42BC8A16E0010E868 /* OAuth2TokenStorage.swift in Sources */,
 				841383C92C6CEF5E00303398 /* Profile.swift in Sources */,
 				841383C12C6CEED300303398 /* PhotoResult.swift in Sources */,
