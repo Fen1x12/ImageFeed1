@@ -35,6 +35,7 @@
 		8413844D2CA2FFFE00303398 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8413844C2CA2FFFE00303398 /* Configuration.swift */; };
 		841384502CA300A300303398 /* AlertManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8413844F2CA300A300303398 /* AlertManager.swift */; };
 		841384522CA3025A00303398 /* ImagesListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841384512CA3025A00303398 /* ImagesListPresenter.swift */; };
+		841384562CA55E2E00303398 /* DateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841384552CA55E2E00303398 /* DateManager.swift */; };
 		841B01572C11C7BB003D4E18 /* ImagesListService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841B01562C11C7BB003D4E18 /* ImagesListService.swift */; };
 		8424B0162BD6B90B0096F987 /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 8424B0152BD6B90B0096F987 /* ProgressHUD */; };
 		8424B0192BD6BD550096F987 /* UIBlockingProgressHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8424B0182BD6BD550096F987 /* UIBlockingProgressHUD.swift */; };
@@ -122,6 +123,7 @@
 		8413844C2CA2FFFE00303398 /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		8413844F2CA300A300303398 /* AlertManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertManager.swift; sourceTree = "<group>"; };
 		841384512CA3025A00303398 /* ImagesListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListPresenter.swift; sourceTree = "<group>"; };
+		841384552CA55E2E00303398 /* DateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateManager.swift; sourceTree = "<group>"; };
 		841B01562C11C7BB003D4E18 /* ImagesListService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListService.swift; sourceTree = "<group>"; };
 		8424B0182BD6BD550096F987 /* UIBlockingProgressHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBlockingProgressHUD.swift; sourceTree = "<group>"; };
 		8424B01A2BD6BDEA0096F987 /* ProfileImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageService.swift; sourceTree = "<group>"; };
@@ -255,6 +257,7 @@
 			isa = PBXGroup;
 			children = (
 				8413844F2CA300A300303398 /* AlertManager.swift */,
+				841384552CA55E2E00303398 /* DateManager.swift */,
 			);
 			path = AlertManager;
 			sourceTree = "<group>";
@@ -645,6 +648,7 @@
 				841383D32C6CFB5800303398 /* URLSessionExtension.swift in Sources */,
 				841384442CA2DCB700303398 /* ProfileViewPresenter.swift in Sources */,
 				8413844D2CA2FFFE00303398 /* Configuration.swift in Sources */,
+				841384562CA55E2E00303398 /* DateManager.swift in Sources */,
 				8424B0212BE0FEEC0096F987 /* ProfileService.swift in Sources */,
 				8424B01B2BD6BDEB0096F987 /* ProfileImageService.swift in Sources */,
 				84BD20B62BA44C23008FEF90 /* ImagesViewController.swift in Sources */,
