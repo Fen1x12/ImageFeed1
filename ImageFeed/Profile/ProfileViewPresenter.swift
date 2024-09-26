@@ -11,6 +11,7 @@ public protocol ProfileViewPresenterProtocol {
     var view: ProfileViewControllerProtocol? { get set }
     func viewDidLoad()
     func updateAvatar()
+    func updateProfileDetails(profile: Profile?)
 }
 
 final class ProfileViewPresenter: ProfileViewPresenterProtocol {
