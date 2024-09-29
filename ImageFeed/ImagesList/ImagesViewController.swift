@@ -133,8 +133,8 @@ extension ImagesListViewController: ImagesListCellDelegate {
         }
     }
     
-    func showLikeErrorAlert(with error: Error)  {
-        let alert = alertManager.likeAlert(with: Error.self as! Error)
+    func showLikeErrorAlert(with error: Error) {
+        let alert = alertManager.likeAlert(with: error) // передаем объект ошибки
         present(alert, animated: true, completion: nil)
     }
 }
