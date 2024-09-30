@@ -58,29 +58,74 @@ final class ImageFeedUITests: XCTestCase {
     }
     
     func testFeed() throws {
+        // Получаем таблицу с элементами
         let tablesQuery = app.tables
         let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
+        
+        // Убедимся, что первая ячейка существует
         XCTAssertTrue(cell.waitForExistence(timeout: 5))
+        
+        // Свайп вверх для загрузки дополнительных элементов
         cell.swipeUp()
 
-        let cellToLike = tablesQuery.children(matching: .cell).element(boundBy: 0)
-        let likeButton = cellToLike.buttons["noLike"]
-        likeButton.tap()
+        // Находим кнопку "noLike" в первой ячейке
+        let likeButton = cell.buttons["noLike"]
+        
+        // Убедимся, что кнопка лайка существует
+        XCTAssertTrue(likeButton.waitForExistence(timeout: 5), "Кнопка 'noLike' не найдена")
+
+        // Нажимаем кнопку "Like"
+        if likeButton.isHittable {
+            likeButton.tap()
+        } else {
+            let coordinate = likeButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            coordinate.tap()
+        }
+        
+        // Ожидание для стабилизации интерфейса
         sleep(5)
-        likeButton.tap()
-        sleep(5)
-        cellToLike.tap()
+        
+        // Нажимаем кнопку повторно для отмены лайка
+        if likeButton.isHittable {
+            likeButton.tap()
+        } else {
+            let coordinate = likeButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            coordinate.tap()
+        }
+        
+        // Ожидание для стабилизации интерфейса
         sleep(5)
 
+        // Проверяем, выполняется ли тестирование
+        let isTesting = ProcessInfo.processInfo.arguments.contains("UITests")
+
+        // Если в режиме тестирования, отключаем пагинацию
+        if !isTesting {
+            // Здесь должен быть вызов метода для пагинации, например:
+            // fetchPhotosNextPage()
+            // Но в режиме тестов он не выполняется
+        }
+        
+        // Открываем изображение в первой ячейке
+        cell.tap()
+
+        // Проверяем наличие ScrollView для изображения
         let scrollView = app.scrollViews.element(boundBy: 0)
         XCTAssertTrue(scrollView.waitForExistence(timeout: 10), "ScrollView не найден")
+
+        // Находим изображение в ScrollView
         let image = scrollView.images.element(boundBy: 0)
         XCTAssertTrue(image.waitForExistence(timeout: 10), "Изображение не найдено")
 
-        image.pinch(withScale: 3, velocity: 1)
-        image.pinch(withScale: 0.5, velocity: -1)
-
-        let navBackButtonWhiteButton = app.buttons["singleViewBackButton"]
+        // Выполняем зумирование изображения
+        image.pinch(withScale: 3, velocity: 1)   // Увеличиваем изображение
+        image.pinch(withScale: 0.5, velocity: -1)  // Уменьшаем изображение
+        
+        // Возвращаемся назад, добавив идентификатор для кнопки "Back"
+        let navBackButtonWhiteButton = app.buttons["singleViewBackButton"] // Убедитесь, что этот идентификатор добавлен в код приложения
+        XCTAssertTrue(navBackButtonWhiteButton.waitForExistence(timeout: 5), "Кнопка возврата не найдена")
+        
+        // Нажимаем на кнопку возврата
         navBackButtonWhiteButton.tap()
     }
     
