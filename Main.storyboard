@@ -168,6 +168,7 @@
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Frl-rf-iwr">
                                 <rect key="frame" x="8" y="8" width="48" height="48"/>
+                                <accessibility key="accessibilityConfiguration" identifier="singleViewBackButton"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="6YQ-gi-JMr"/>
                                     <constraint firstAttribute="width" constant="48" id="PLe-X7-eDm"/>
@@ -285,6 +286,7 @@
                             </wkWebView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W4W-hi-ERZ">
                                 <rect key="frame" x="0.0" y="0.0" width="64" height="44"/>
+                                <accessibility key="accessibilityConfiguration" identifier="singleViewBackButton"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="64" id="DMr-P1-HXB"/>
                                     <constraint firstAttribute="height" constant="44" id="ux1-aI-hHY"/>
