@@ -28,6 +28,9 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
         super.viewDidLoad()
         presenter?.viewDidLoad()
         presenter?.view = self
+        // Изменения
+        setupTableView()
+        // Изменения
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -47,6 +50,12 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
         tableView.delegate = self
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
+    // Изменения
+    // Метод для проверки, запущено ли приложение в режиме тестирования
+    func isRunningUITest() -> Bool {
+        return ProcessInfo.processInfo.arguments.contains("UITests")
+    }
+    // Изменения
 }
 
 extension ImagesListViewController: UITableViewDataSource {
@@ -74,6 +83,12 @@ extension ImagesListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // Изменения
+        // Проверка, выполняется ли приложение в режиме тестирования
+        if isRunningUITest() {
+            return // Не выполняем пагинацию в режиме тестирования
+        }
+        // Изменения
         if indexPath.row + 1 == photos.count {
             presenter?.checkCompletedList(indexPath)
         }

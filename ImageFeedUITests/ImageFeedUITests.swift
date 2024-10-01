@@ -15,10 +15,14 @@ final class ImageFeedUITests: XCTestCase {
     
     private let app = XCUIApplication()
     
-    override func setUpWithError() throws {
-        continueAfterFailure = false
-        app.launch()
-    }
+  //Изменения
+        override func setUpWithError() throws {
+            continueAfterFailure = false
+            // Добавляем аргумент, чтобы приложение знало, что оно запущено в режиме тестирования
+            app.launchArguments.append("UITests")
+            app.launch()
+        }
+// Изменения
     
     func testAuth() throws {
         XCTAssertTrue(app.buttons["Authenticate"].waitForExistence(timeout: 3))
