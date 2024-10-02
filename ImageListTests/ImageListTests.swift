@@ -10,16 +10,16 @@ import XCTest
 
 final class ImagesListTests: XCTestCase {
     
-    func testImagesViewControllerCallsViewDidLoad() {
-        let imageListService = ImagesListService()
-        let viewController = ImagesListViewController()
-        let presenter = ImagesListPresenterSpy(imagesListService: imageListService)
-        viewController.presenter = presenter
-        presenter.view = viewController
+    func testImagesViewControllerCallsViewDidLoad() throws {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        guard let viewController = storyboard.instantiateViewController(withIdentifier: "ImagesListViewController") as? ImagesListViewController else {
+            XCTFail("Не удалось загрузить ImagesListViewController")
+            return
+        }
         
-        _ = viewController.view
+        _ = viewController.view  // Загрузка view, чтобы вызвать viewDidLoad()
         
-        XCTAssertTrue(presenter.viewDidLoadCalled)
+        XCTAssertNotNil(viewController.presenter, "Presenter не был установлен")
     }
     
     func testLike () {

@@ -1,8 +1,7 @@
-//
 //  ImageFeedUITests.swift
 //  ImageFeedUITests
 //
-//  Created by  Admin on 23.09.2024.
+//  Created by Admin on 23.09.2024.
 //
 
 import XCTest
@@ -15,134 +14,112 @@ final class ImageFeedUITests: XCTestCase {
     
     private let app = XCUIApplication()
     
-  //Изменения
-        override func setUpWithError() throws {
-            continueAfterFailure = false
-            // Добавляем аргумент, чтобы приложение знало, что оно запущено в режиме тестирования
-            app.launchArguments.append("UITests")
-            app.launch()
-        }
-// Изменения
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+        app.launchArguments.append("UITests")
+        app.launch()
+    }
     
     func testAuth() throws {
         XCTAssertTrue(app.buttons["Authenticate"].waitForExistence(timeout: 3))
         app.buttons["Authenticate"].tap()
-
+        
         let webView = app.webViews["UnsplashWebView"]
         XCTAssertTrue(webView.waitForExistence(timeout: 10))
-
+        
         let loginTextField = webView.textFields.element(boundBy: 0)
         XCTAssertTrue(loginTextField.waitForExistence(timeout: 10))
-
+        
         loginTextField.tap()
         loginTextField.typeText(login)
-
-        // Скрытие клавиатуры свайпом
+        
         webView.swipeUp()
-
         app.toolbars.buttons["Done"].tap()
         
         let passwordTextField = webView.secureTextFields.element(boundBy: 0)
         XCTAssertTrue(passwordTextField.waitForExistence(timeout: 10))
-
+        
         passwordTextField.tap()
         passwordTextField.typeText(password)
-
-        // Скрытие клавиатуры свайпом
+        
         webView.swipeUp()
-
         app.toolbars.buttons["Done"].tap()
-
+        
         let loginButton = webView.buttons["Login"]
         XCTAssertTrue(loginButton.waitForExistence(timeout: 10))
         loginButton.tap()
-
+        
         let cell = app.tables.cells.element(boundBy: 0)
         XCTAssertTrue(cell.waitForExistence(timeout: 10))
     }
     
     func testFeed() throws {
-        // Получаем таблицу с элементами
+        // Ожидание загрузки экрана ленты
         let tablesQuery = app.tables
         let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
-        
-        // Убедимся, что первая ячейка существует
         XCTAssertTrue(cell.waitForExistence(timeout: 5))
         
         // Свайп вверх для загрузки дополнительных элементов
         cell.swipeUp()
-
-        // Находим кнопку "noLike" в первой ячейке
+        
+        // Поставить лайк
         let likeButton = cell.buttons["noLike"]
-        
-        // Убедимся, что кнопка лайка существует
         XCTAssertTrue(likeButton.waitForExistence(timeout: 5), "Кнопка 'noLike' не найдена")
-
-        // Нажимаем кнопку "Like"
-        if likeButton.isHittable {
-            likeButton.tap()
-        } else {
-            let coordinate = likeButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-            coordinate.tap()
-        }
+        likeButton.tap()
         
         // Ожидание для стабилизации интерфейса
-        sleep(5)
+        sleep(1)
         
-        // Нажимаем кнопку повторно для отмены лайка
-        if likeButton.isHittable {
-            likeButton.tap()
-        } else {
-            let coordinate = likeButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-            coordinate.tap()
-        }
+        // Отменить лайк
+        likeButton.tap()
         
         // Ожидание для стабилизации интерфейса
-        sleep(5)
-
-        // Проверяем, выполняется ли тестирование
-        let isTesting = ProcessInfo.processInfo.arguments.contains("UITests")
-
-        // Если в режиме тестирования, отключаем пагинацию
-        if !isTesting {
-            // Здесь должен быть вызов метода для пагинации, например:
-            // fetchPhotosNextPage()
-            // Но в режиме тестов он не выполняется
-        }
+        sleep(1)
         
-        // Открываем изображение в первой ячейке
+        // Нажать на верхнюю ячейку
         cell.tap()
-
-        // Проверяем наличие ScrollView для изображения
+        
+        // Ожидание, пока картинка открывается на весь экран
         let scrollView = app.scrollViews.element(boundBy: 0)
         XCTAssertTrue(scrollView.waitForExistence(timeout: 10), "ScrollView не найден")
-
-        // Находим изображение в ScrollView
+        
+        // Увеличить картинку
         let image = scrollView.images.element(boundBy: 0)
         XCTAssertTrue(image.waitForExistence(timeout: 10), "Изображение не найдено")
-
-        // Выполняем зумирование изображения
         image.pinch(withScale: 3, velocity: 1)   // Увеличиваем изображение
+        
+        // Уменьшить картинку
         image.pinch(withScale: 0.5, velocity: -1)  // Уменьшаем изображение
         
-        // Возвращаемся назад, добавив идентификатор для кнопки "Back"
-        let navBackButtonWhiteButton = app.buttons["singleViewBackButton"] // Убедитесь, что этот идентификатор добавлен в код приложения
-        XCTAssertTrue(navBackButtonWhiteButton.waitForExistence(timeout: 5), "Кнопка возврата не найдена")
-        
-        // Нажимаем на кнопку возврата
-        navBackButtonWhiteButton.tap()
+        // Вернуться на экран ленты
+        let backButton = app.buttons["singleViewBackButton"] // Убедитесь, что этот идентификатор добавлен в код приложения
+        XCTAssertTrue(backButton.waitForExistence(timeout: 5), "Кнопка возврата не найдена")
+        backButton.tap()
     }
     
     func testProfile() throws {
-        sleep(5)
+        // Ожидание загрузки экрана ленты
+        let table = app.tables.element(boundBy: 0)
+        XCTAssertTrue(table.waitForExistence(timeout: 5), "Таблица не найдена")
+
+        // Перейти на экран профиля
         app.tabBars.buttons.element(boundBy: 1).tap()
         
-        XCTAssertTrue(app.staticTexts["\(fullName)"].exists)
-        XCTAssertTrue(app.staticTexts["\(userName)"].exists)
+        // Проверить, что на профиле отображаются ваши персональные данные
+        XCTAssertTrue(app.staticTexts["\(fullName)"].waitForExistence(timeout: 5), "Полное имя не отображается")
+        XCTAssertTrue(app.staticTexts["\(userName)"].waitForExistence(timeout: 5), "Имя пользователя не отображается")
         
+        // Нажать кнопку логаута
         app.buttons["exit"].tap()
         
-        app.alerts["Пока, пока!"].scrollViews.otherElements.buttons["Да"].tap()
-        sleep(3)
+        // Ожидание, чтобы экран логаута был полностью открыт
+        let alert = app.alerts["Пока, пока!"]
+        XCTAssertTrue(alert.waitForExistence(timeout: 5), "Экран логаута не появился")
+        
+        // Нажимаем "Да" для подтверждения выхода
+        alert.scrollViews.otherElements.buttons["Да"].tap()
+        
+        // Ожидание, чтобы экран авторизации был открыт
+        XCTAssertTrue(app.buttons["Authenticate"].waitForExistence(timeout: 10), "Экран авторизации не открыт")
     }
 }

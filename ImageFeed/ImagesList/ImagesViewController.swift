@@ -8,9 +8,9 @@ protocol ImagesListViewControllerProtocol: AnyObject {
 }
 
 final class ImagesListViewController: UIViewController, ImagesListViewControllerProtocol {
-    lazy var presenter: ImagesListViewPresenterProtocol? = {
-        return ImagesListViewPresenter()
-    } ()
+    
+    // Инициализация presenter в viewDidLoad для предотвращения проблем
+    var presenter: ImagesListViewPresenterProtocol?
     
     var photos: [Photo] = []
     private let showSingleImageSegueIdentifire = "ShowSingleImage"
@@ -26,11 +26,13 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter?.viewDidLoad()
+        
+        // Инициализация presenter
+        presenter = ImagesListViewPresenter()
         presenter?.view = self
-        // Изменения
-        setupTableView()
-        // Изменения
+        presenter?.viewDidLoad() // Вызов метода viewDidLoad у presenter
+
+        setupTableView() // Настройка tableView
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -50,12 +52,24 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
         tableView.delegate = self
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
-    // Изменения
-    // Метод для проверки, запущено ли приложение в режиме тестирования
+    
+    func updateTableViewAnimated() {
+        let oldCount = photos.count
+        guard let newPhotos = presenter?.imagesListService.photos else { return }
+        photos = newPhotos
+        
+        if oldCount != photos.count {
+            tableView.performBatchUpdates {
+                let indexPaths = (oldCount..<photos.count).map { IndexPath(row: $0, section: 0) }
+                tableView.insertRows(at: indexPaths, with: .fade)
+            } completion: { _ in }
+        }
+    }
+    
+    // Проверка, запущено ли приложение в режиме тестирования
     func isRunningUITest() -> Bool {
         return ProcessInfo.processInfo.arguments.contains("UITests")
     }
-    // Изменения
 }
 
 extension ImagesListViewController: UITableViewDataSource {
@@ -83,12 +97,10 @@ extension ImagesListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        // Изменения
         // Проверка, выполняется ли приложение в режиме тестирования
-        if isRunningUITest() {
-            return // Не выполняем пагинацию в режиме тестирования
+        if isRunningUITest() {return // Не выполняем пагинацию в режиме тестирования
         }
-        // Изменения
+        
         if indexPath.row + 1 == photos.count {
             presenter?.checkCompletedList(indexPath)
         }
@@ -106,24 +118,6 @@ extension ImagesListViewController: UITableViewDelegate {
     }
 }
 
-// MARK: TableViewAnimated
-extension ImagesListViewController {
-    func updateTableViewAnimated() {
-        let oldCount = photos.count
-        guard let newCount = presenter?.imagesListService.photos.count else { return }
-        guard let newPhotos = presenter?.imagesListService.photos else { return}
-        photos = newPhotos
-        if oldCount != newCount {
-            tableView.performBatchUpdates {
-                let indexPaths = (oldCount..<newCount).map { i in
-                    IndexPath(row: i, section: 0)
-                }
-                tableView.insertRows(at: indexPaths, with: .fade)
-            }completion: { _ in }
-        }
-    }
-}
-
 extension ImagesListViewController: ImagesListCellDelegate {
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
@@ -131,8 +125,8 @@ extension ImagesListViewController: ImagesListCellDelegate {
         
         UIBlockingProgressHUD.show()
         
-        presenter?.changeLike(photoId: photo.id, isLike: !photo.isLiked) { [ weak self ] result in
-            guard let self else { return }
+        presenter?.changeLike(photoId: photo.id, isLike: !photo.isLiked) { [weak self] result in
+            guard let self = self else { return }
             
             switch result {
             case .success:

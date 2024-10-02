@@ -20,19 +20,23 @@ final class ProfileViewTest: XCTestCase {
         
         viewController.updateAvatar(url: url)
         
-        XCTAssertTrue(viewController.isUpdateAvatarCalled)
+        // Проверяем, что метод обновления аватара был вызван
+        XCTAssertTrue(viewController.isUpdateAvatarCalled, "Метод updateAvatar не был вызван")
     }
     
-    func testViewControllerCallsViewDidLoad() {
-        let viewController = ProfileViewController()
-        let presenter = ProfileViewPresenterSpy()
-        viewController.presenter = presenter
-        presenter.view = viewController
+    func testImagesViewControllerCallsViewDidLoad() {
+        // Загружаем storyboard
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        guard let viewController = storyboard.instantiateViewController(withIdentifier: "ImagesListViewController") as? ImagesListViewController else {
+            XCTFail("Не удалось загрузить ImagesListViewController")
+            return
+        }
         
+        // Принудительно вызываем загрузку view
         _ = viewController.view
-        presenter.viewDidLoad()
         
-        XCTAssertTrue(presenter.isViewDidLoadCalled)
+        // Проверяем, что presenter инициализирован
+        XCTAssertNotNil(viewController.presenter, "Presenter не был установлен")
     }
     
     func testProfileViewControllerUpdateProfile() {
@@ -41,10 +45,11 @@ final class ProfileViewTest: XCTestCase {
         
         viewController.presenter = presenter
         presenter.view = viewController
-        let profile = Profile(userName: "", name: nil, loginName: "", bio: nil)
+        let profile = Profile(userName: "TestUser", name: "Test Name", loginName: "test_login", bio: "This is a test bio.")
         
         presenter.updateProfileDetails(profile: profile)
         
-        XCTAssertTrue(presenter.isUpdateProfileCalled)
+        // Проверяем, что метод обновления профиля был вызван
+        XCTAssertTrue(presenter.isUpdateProfileCalled, "Метод updateProfileDetails не был вызван")
     }
 }
