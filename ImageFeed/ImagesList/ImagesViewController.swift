@@ -9,13 +9,11 @@ protocol ImagesListViewControllerProtocol: AnyObject {
 
 final class ImagesListViewController: UIViewController, ImagesListViewControllerProtocol {
     
-    // Инициализация presenter в viewDidLoad для предотвращения проблем
+    // Presenter теперь можно задать извне, что позволяет использовать mock/spy для тестов
     var presenter: ImagesListViewPresenterProtocol?
     
     var photos: [Photo] = []
     private let showSingleImageSegueIdentifire = "ShowSingleImage"
-    private var imagesListServiceObserver: NSObjectProtocol?
-    private let imagesListService = ImagesListService.shared
     private let alertManager = AlertManager.shared
     
     @IBOutlet private var tableView: UITableView!
@@ -27,8 +25,7 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Инициализация presenter
-        presenter = ImagesListViewPresenter()
+        // Presenter должен быть инициализирован извне
         presenter?.view = self
         presenter?.viewDidLoad() // Вызов метода viewDidLoad у presenter
 
@@ -90,7 +87,6 @@ extension ImagesListViewController: UITableViewDataSource {
         return imageListCell
     }
 }
-
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: showSingleImageSegueIdentifire, sender: indexPath)
@@ -98,8 +94,7 @@ extension ImagesListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         // Проверка, выполняется ли приложение в режиме тестирования
-        if isRunningUITest() {return // Не выполняем пагинацию в режиме тестирования
-        }
+        if isRunningUITest() { return } // Не выполняем пагинацию в режиме тестирования
         
         if indexPath.row + 1 == photos.count {
             presenter?.checkCompletedList(indexPath)
