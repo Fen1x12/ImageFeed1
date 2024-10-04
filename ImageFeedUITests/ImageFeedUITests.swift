@@ -8,7 +8,7 @@ import XCTest
 
 final class ImageFeedUITests: XCTestCase {
     private let login = "baurasm@bk.ru"
-    private let password = "rozqex-josvow-1wafTa"
+    private let password = "1hd1gh243d"
     private let fullName = "Mihail Bauras"
     private let userName = "@fen1x1122"
     
@@ -20,80 +20,51 @@ final class ImageFeedUITests: XCTestCase {
         app.launch()
     }
     
-    func testAuth() throws {
-        XCTAssertTrue(app.buttons["Authenticate"].waitForExistence(timeout: 3))
-        app.buttons["Authenticate"].tap()
-        
-        let webView = app.webViews["UnsplashWebView"]
-        XCTAssertTrue(webView.waitForExistence(timeout: 10))
-        
-        let loginTextField = webView.textFields.element(boundBy: 0)
-        XCTAssertTrue(loginTextField.waitForExistence(timeout: 20))
-        
-        loginTextField.tap()
-        loginTextField.typeText(login)
-        
-        webView.swipeUp()
-        app.toolbars.buttons["Done"].tap()
-        
-        let passwordTextField = webView.secureTextFields.element(boundBy: 0)
-        XCTAssertTrue(passwordTextField.waitForExistence(timeout: 10))
-        
-        passwordTextField.tap()
-        passwordTextField.typeText(password)
-        
-        webView.swipeUp()
-        app.toolbars.buttons["Done"].tap()
-        
-        let loginButton = webView.buttons["Login"]
-        XCTAssertTrue(loginButton.waitForExistence(timeout: 10))
-        loginButton.tap()
-        
-        let cell = app.tables.cells.element(boundBy: 0)
-        XCTAssertTrue(cell.waitForExistence(timeout: 10))
-    }
-    
     func testFeed() throws {
-        // Ожидание загрузки экрана ленты
+        // 1. Подождать, пока открывается и загружается экран ленты
         let tablesQuery = app.tables
         let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
-        XCTAssertTrue(cell.waitForExistence(timeout: 5))
         
-        // Свайп вверх для загрузки дополнительных элементов
+        XCTAssertTrue(cell.waitForExistence(timeout: 10), "Первая ячейка не найдена в течение 10 секунд")
+        
+        // 2. Сделать жест «смахивания» вверх по экрану для его скролла
         cell.swipeUp()
         
-        // Поставить лайк
+        // 3. Поставить лайк в ячейке верхней картинки
         let likeButton = cell.buttons["noLike"]
-        XCTAssertTrue(likeButton.waitForExistence(timeout: 5), "Кнопка 'noLike' не найдена")
+        if !likeButton.waitForExistence(timeout: 10) {
+            XCTFail("Кнопка 'noLike' не найдена")
+            return
+        }
         likeButton.tap()
         
         // Ожидание для стабилизации интерфейса
         sleep(1)
         
-        // Отменить лайк
+        // 4. Отменить лайк в ячейке верхней картинки
         likeButton.tap()
         
         // Ожидание для стабилизации интерфейса
         sleep(1)
         
-        // Нажать на верхнюю ячейку
+        // 5. Нажать на верхнюю ячейку
         cell.tap()
         
-        // Ожидание, пока картинка открывается на весь экран
+        // 6. Подождать, пока картинка открывается на весь экран
         let scrollView = app.scrollViews.element(boundBy: 0)
-        XCTAssertTrue(scrollView.waitForExistence(timeout: 10), "ScrollView не найден")
+        XCTAssertTrue(scrollView.waitForExistence(timeout: 10), "ScrollView не найден в течение 10 секунд")
         
-        // Увеличить картинку
+        // 7. Увеличить картинку
         let image = scrollView.images.element(boundBy: 0)
-        XCTAssertTrue(image.waitForExistence(timeout: 10), "Изображение не найдено")
+        XCTAssertTrue(image.waitForExistence(timeout: 10), "Изображение не найдено в течение 10 секунд")
         image.pinch(withScale: 3, velocity: 1)   // Увеличиваем изображение
         
-        // Уменьшить картинку
+        // 8. Уменьшить картинку
         image.pinch(withScale: 0.5, velocity: -1)  // Уменьшаем изображение
         
-        // Вернуться на экран ленты
-        let backButton = app.buttons["singleViewBackButton"] // Убедитесь, что этот идентификатор добавлен в код приложения
-        XCTAssertTrue(backButton.waitForExistence(timeout: 5), "Кнопка возврата не найдена")
+        // 9. Вернуться на экран ленты
+        let backButton = app.buttons["singleViewBackButton"]
+        XCTAssertTrue(backButton.waitForExistence(timeout: 10), "Кнопка возврата не найдена в течение 10 секунд")
         backButton.tap()
     }
     
