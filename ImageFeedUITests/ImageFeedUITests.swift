@@ -20,6 +20,40 @@ final class ImageFeedUITests: XCTestCase {
         app.launch()
     }
     
+    func testAuth() throws {
+        XCTAssertTrue(app.buttons["Authenticate"].waitForExistence(timeout: 3))
+        app.buttons["Authenticate"].tap()
+        
+        let webView = app.webViews["UnsplashWebView"]
+        XCTAssertTrue(webView.waitForExistence(timeout: 10))
+        
+        let loginTextField = webView.textFields.element(boundBy: 0)
+        XCTAssertTrue(loginTextField.waitForExistence(timeout: 20))
+        
+        loginTextField.tap()
+        loginTextField.typeText(login)
+        
+        webView.swipeUp()
+        app.toolbars.buttons["Done"].tap()
+        
+        let passwordTextField = webView.secureTextFields.element(boundBy: 0)
+        XCTAssertTrue(passwordTextField.waitForExistence(timeout: 10))
+        
+        passwordTextField.tap()
+        passwordTextField.typeText(password)
+        
+        webView.swipeUp()
+        app.toolbars.buttons["Done"].tap()
+        
+        let loginButton = webView.buttons["Login"]
+        XCTAssertTrue(loginButton.waitForExistence(timeout: 10))
+        loginButton.tap()
+        
+        let cell = app.tables.cells.element(boundBy: 0)
+        XCTAssertTrue(cell.waitForExistence(timeout: 10))
+    }
+
+    
     func testFeed() throws {
         // 1. Подождать, пока открывается и загружается экран ленты
         let tablesQuery = app.tables
