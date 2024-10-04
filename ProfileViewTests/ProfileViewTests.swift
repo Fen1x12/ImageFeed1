@@ -7,7 +7,6 @@
 
 import XCTest
 @testable import ImageFeed
-
 final class ProfileViewTest: XCTestCase {
     
     func testProfileViewControllerUpdateAvatar() {
@@ -27,6 +26,9 @@ final class ProfileViewTest: XCTestCase {
     }
     
     func testImagesViewControllerCallsViewDidLoad() {
+        // Создаем шпион для presenter
+        let presenter = ImagesListViewPresenterSpy()
+        
         // Загружаем storyboard
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         guard let viewController = storyboard.instantiateViewController(withIdentifier: "ImagesListViewController") as? ImagesListViewController else {
@@ -34,11 +36,14 @@ final class ProfileViewTest: XCTestCase {
             return
         }
         
+        // Устанавливаем presenter
+        viewController.presenter = presenter
+        
         // Принудительно вызываем загрузку view
         _ = viewController.view
         
-        // Проверяем, что presenter инициализирован
-        XCTAssertNotNil(viewController.presenter, "Presenter не был установлен")
+        // Проверяем, что метод viewDidLoad у presenter был вызван
+        XCTAssertTrue(presenter.isViewDidLoadCalled, "Метод viewDidLoad не был вызван у presenter")
     }
     
     func testProfileViewControllerUpdateProfile() {
