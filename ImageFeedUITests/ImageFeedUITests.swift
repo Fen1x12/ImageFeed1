@@ -43,6 +43,7 @@ final class ImageFeedUITests: XCTestCase {
         passwordTextField.typeText(password)
         
         webView.swipeUp()
+        sleep(5)
         app.toolbars.buttons["Done"].tap()
         
         let loginButton = webView.buttons["Login"]
@@ -60,8 +61,6 @@ final class ImageFeedUITests: XCTestCase {
         let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
         XCTAssertTrue(cell.waitForExistence(timeout: 5))
         
-        // Свайп вверх для загрузки дополнительных элементов
-        cell.swipeUp()
         // Поставить лайк
         let likeButton = cell.buttons["noLike"]
         XCTAssertTrue(likeButton.waitForExistence(timeout: 5), "Кнопка 'noLike' не найдена")
@@ -71,6 +70,9 @@ final class ImageFeedUITests: XCTestCase {
         sleep(1)
         // Отменить лайк
         likeButton.tap()
+        
+        // Свайп вверх для загрузки дополнительных элементов
+        cell.swipeUp()
         
         // Ожидание для стабилизации интерфейса
         sleep(1)
