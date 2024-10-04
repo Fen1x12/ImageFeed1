@@ -12,7 +12,7 @@ final class ImagesListTests: XCTestCase {
     
     func testImagesViewControllerCallsViewDidLoad() throws {
 
-        let imagesListService = ImagesListService() 
+        let imagesListService = ImagesListService()
         let presenter = ImagesListViewPresenterSpy(imagesListService: imagesListService)
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
