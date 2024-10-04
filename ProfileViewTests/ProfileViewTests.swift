@@ -27,7 +27,8 @@ final class ProfileViewTest: XCTestCase {
     
     func testImagesViewControllerCallsViewDidLoad() {
         // Создаем шпион для presenter
-        let presenter = ImagesListViewPresenterSpy()
+        let imagesListService = ImagesListService() // Или используйте нужный вам инициализатор
+        let presenter = ImagesListViewPresenterSpy(imagesListService: imagesListService)
         
         // Загружаем storyboard
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -39,10 +40,9 @@ final class ProfileViewTest: XCTestCase {
         // Устанавливаем presenter
         viewController.presenter = presenter
         
-        // Принудительно вызываем загрузку view
         _ = viewController.view
         
-        // Проверяем, что метод viewDidLoad у presenter был вызван
+        presenter.viewDidLoad()
         XCTAssertTrue(presenter.isViewDidLoadCalled, "Метод viewDidLoad не был вызван у presenter")
     }
     
