@@ -8,9 +8,9 @@ protocol ImagesListViewControllerProtocol: AnyObject {
 }
 
 final class ImagesListViewController: UIViewController, ImagesListViewControllerProtocol {
-    
-    // Presenter теперь можно задать извне, что позволяет использовать mock/spy для тестов
-    var presenter: ImagesListViewPresenterProtocol?
+    lazy var presenter: ImagesListViewPresenterProtocol? = {
+        return ImagesListViewPresenter()
+    }()
     
     var photos: [Photo] = []
     private let showSingleImageSegueIdentifire = "ShowSingleImage"
@@ -24,11 +24,8 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Presenter должен быть инициализирован извне
-        presenter?.view = self
-        presenter?.viewDidLoad() // Вызов метода viewDidLoad у presenter
-
+        presenter?.view = self // Устанавливаем view для presenter
+        presenter?.viewDidLoad()
         setupTableView() // Настройка tableView
     }
     
@@ -49,26 +46,9 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
         tableView.delegate = self
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
-    
-    func updateTableViewAnimated() {
-        let oldCount = photos.count
-        guard let newPhotos = presenter?.imagesListService.photos else { return }
-        photos = newPhotos
-        
-        if oldCount != photos.count {
-            tableView.performBatchUpdates {
-                let indexPaths = (oldCount..<photos.count).map { IndexPath(row: $0, section: 0) }
-                tableView.insertRows(at: indexPaths, with: .fade)
-            } completion: { _ in }
-        }
-    }
-    
-    // Проверка, запущено ли приложение в режиме тестирования
-    func isRunningUITest() -> Bool {
-        return ProcessInfo.processInfo.arguments.contains("UITests")
-    }
 }
 
+// MARK: TableView Data Source
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return photos.count
@@ -87,15 +67,14 @@ extension ImagesListViewController: UITableViewDataSource {
         return imageListCell
     }
 }
+
+// MARK: TableView Delegate
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: showSingleImageSegueIdentifire, sender: indexPath)
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        // Проверка, выполняется ли приложение в режиме тестирования
-        if isRunningUITest() { return } // Не выполняем пагинацию в режиме тестирования
-        
         if indexPath.row + 1 == photos.count {
             presenter?.checkCompletedList(indexPath)
         }
@@ -113,6 +92,22 @@ extension ImagesListViewController: UITableViewDelegate {
     }
 }
 
+// MARK: Update TableView
+extension ImagesListViewController {
+    func updateTableViewAnimated() {
+        let oldCount = photos.count
+        guard let newPhotos = presenter?.imagesListService.photos else { return }
+        photos = newPhotos
+        
+        if oldCount != photos.count {
+            tableView.performBatchUpdates {
+                let indexPaths = (oldCount..<photos.count).map { IndexPath(row: $0, section: 0) }
+                tableView.insertRows(at: indexPaths, with: .fade)
+            } completion: { _ in }
+        }
+    }
+}
+// MARK: ImagesListCellDelegate
 extension ImagesListViewController: ImagesListCellDelegate {
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
@@ -125,8 +120,7 @@ extension ImagesListViewController: ImagesListCellDelegate {
             
             switch result {
             case .success:
-                guard let newPhotos = self.presenter?.imagesListService.photos else { return }
-                self.photos = newPhotos
+                self.photos = self.presenter?.imagesListService.photos ?? []
                 cell.setIsLiked(isLiked: self.photos[indexPath.row].isLiked)
                 UIBlockingProgressHUD.dismiss()
                 
@@ -138,7 +132,7 @@ extension ImagesListViewController: ImagesListCellDelegate {
     }
     
     func showLikeErrorAlert(with error: Error) {
-        let alert = alertManager.likeAlert(with: error) // передаем объект ошибки
+        let alert = alertManager.likeAlert(with: error)
         present(alert, animated: true, completion: nil)
     }
 }

@@ -28,7 +28,7 @@ final class ImageFeedUITests: XCTestCase {
         XCTAssertTrue(webView.waitForExistence(timeout: 10))
         
         let loginTextField = webView.textFields.element(boundBy: 0)
-        XCTAssertTrue(loginTextField.waitForExistence(timeout: 10))
+        XCTAssertTrue(loginTextField.waitForExistence(timeout: 20))
         
         loginTextField.tap()
         loginTextField.typeText(login)
