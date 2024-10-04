@@ -55,51 +55,44 @@ final class ImageFeedUITests: XCTestCase {
 
     
     func testFeed() throws {
-        // 1. Подождать, пока открывается и загружается экран ленты
+        // Ожидание загрузки экрана ленты
         let tablesQuery = app.tables
         let cell = tablesQuery.children(matching: .cell).element(boundBy: 0)
+        XCTAssertTrue(cell.waitForExistence(timeout: 5))
         
-        XCTAssertTrue(cell.waitForExistence(timeout: 10), "Первая ячейка не найдена в течение 10 секунд")
-        
-        // 2. Сделать жест «смахивания» вверх по экрану для его скролла
+        // Свайп вверх для загрузки дополнительных элементов
         cell.swipeUp()
-        
-        // 3. Поставить лайк в ячейке верхней картинки
+        // Поставить лайк
         let likeButton = cell.buttons["noLike"]
-        if !likeButton.waitForExistence(timeout: 10) {
-            XCTFail("Кнопка 'noLike' не найдена")
-            return
-        }
+        XCTAssertTrue(likeButton.waitForExistence(timeout: 5), "Кнопка 'noLike' не найдена")
+        likeButton.tap()
+        
+        // Ожидание для стабилизации интерфейса
+        sleep(1)
+        // Отменить лайк
         likeButton.tap()
         
         // Ожидание для стабилизации интерфейса
         sleep(1)
         
-        // 4. Отменить лайк в ячейке верхней картинки
-        likeButton.tap()
-        
-        // Ожидание для стабилизации интерфейса
-        sleep(1)
-        
-        // 5. Нажать на верхнюю ячейку
+        // Нажать на верхнюю ячейку
         cell.tap()
         
-        // 6. Подождать, пока картинка открывается на весь экран
+        // Ожидание, пока картинка открывается на весь экран
         let scrollView = app.scrollViews.element(boundBy: 0)
-        XCTAssertTrue(scrollView.waitForExistence(timeout: 10), "ScrollView не найден в течение 10 секунд")
+        XCTAssertTrue(scrollView.waitForExistence(timeout: 10), "ScrollView не найден")
         
-        // 7. Увеличить картинку
+        // Увеличить картинку
         let image = scrollView.images.element(boundBy: 0)
-        XCTAssertTrue(image.waitForExistence(timeout: 10), "Изображение не найдено в течение 10 секунд")
+        XCTAssertTrue(image.waitForExistence(timeout: 10), "Изображение не найдено")
         image.pinch(withScale: 3, velocity: 1)   // Увеличиваем изображение
-        
-        // 8. Уменьшить картинку
+        // Уменьшить картинку
         image.pinch(withScale: 0.5, velocity: -1)  // Уменьшаем изображение
-        
-        // 9. Вернуться на экран ленты
-        let backButton = app.buttons["singleViewBackButton"]
-        XCTAssertTrue(backButton.waitForExistence(timeout: 10), "Кнопка возврата не найдена в течение 10 секунд")
+        // Вернуться на экран ленты
+        let backButton = app.buttons["singleViewBackButton"] // Убедитесь, что этот идентификатор добавлен в код приложения
+        XCTAssertTrue(backButton.waitForExistence(timeout: 5), "Кнопка возврата не найдена")
         backButton.tap()
+
     }
     
     func testProfile() throws {
