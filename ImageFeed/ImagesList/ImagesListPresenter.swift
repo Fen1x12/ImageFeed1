@@ -54,7 +54,7 @@ class ImagesListViewPresenter: ImagesListViewPresenterProtocol {
     }
     
     func checkCompletedList(_ indexPath: IndexPath) {
-        guard !ProcessInfo.processInfo.arguments.contains("UITest") else {
+        guard !ProcessInfo.processInfo.arguments.contains("UITests") else {
             return
         }
         if imagesListService.photos.isEmpty || (indexPath.row + 1 == imagesListService.photos.count) {
